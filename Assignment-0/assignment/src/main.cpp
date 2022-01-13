@@ -104,12 +104,16 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// make transformations
-		/*glm::mat4 transform = glm::mat4(1.0f);
-		transform = glm::rotate(transform, (float)glfwGetTime(),
-								glm::vec3(0.0f, 0.0f, 1.0f));
+	 // create transformations
+        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
+        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
 
-*/ ourShader.use();
+        // get matrix's uniform location and set matrix
+        ourShader.use();
+        unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+ ourShader.use();
 		/*		unsigned int transformLoc =
 					glGetUniformLocation(ourShader.ID, "transform");
 				glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
