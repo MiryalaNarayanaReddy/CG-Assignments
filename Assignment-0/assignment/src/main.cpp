@@ -79,18 +79,18 @@ int main(int argc, char *argv[]) {
 		vertices[x] = polygon_vertices_a[y];
 		vertices[x + 1] = polygon_vertices_a[y + 1];
 		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0f;
+		vertices[x + 3] = 0.0f;
 		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 1.0f;
+		vertices[x + 5] = 0.0f;
 
 		x += 6;
 		y -= 3;
 		vertices[x] = polygon_vertices_a[y];
 		vertices[x + 1] = polygon_vertices_a[y + 1];
 		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0f;
+		vertices[x + 3] = 0.0f;
 		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 1.0f;
+		vertices[x + 5] = 0.0f;
 
 		x += 6;
 		vertices[x] = 0;
@@ -105,18 +105,18 @@ int main(int argc, char *argv[]) {
 	vertices[t] = polygon_vertices_a[s];
 	vertices[t + 1] = polygon_vertices_a[s + 1];
 	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 1.0f;
+	vertices[t + 3] = 0.0f;
 	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 1.0f;
+	vertices[t + 5] = 0.0f;
 
 	t += 6;
 	s = 0;
 	vertices[t] = polygon_vertices_a[s];
 	vertices[t + 1] = polygon_vertices_a[s + 1];
 	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 1.0f;
+	vertices[t + 3] = 0.0f;
 	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 1.0f;
+	vertices[t + 5] = 0.0f;
 	t += 6;
 	vertices[t] = 0;
 	vertices[t + 1] = 0;
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
 		vertices[x + 1] = polygon_vertices_b[y + 1];
 		vertices[x + 2] = polygon_vertices_b[y + 2];
 		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
+		vertices[x + 4] = 0.0f;
 		vertices[x + 5] = 1.0f;
 
 		x += 6;
@@ -141,7 +141,7 @@ int main(int argc, char *argv[]) {
 		vertices[x + 1] = polygon_vertices_b[y + 1];
 		vertices[x + 2] = polygon_vertices_b[y + 2];
 		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
+		vertices[x + 4] = 0.0f;
 		vertices[x + 5] = 1.0f;
 
 		x += 6;
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
 	vertices[t + 1] = polygon_vertices_b[s + 1];
 	vertices[t + 2] = polygon_vertices_b[s + 2];
 	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
+	vertices[t + 4] = 0.0f;
 	vertices[t + 5] = 1.0f;
 
 	t += 6;
@@ -168,7 +168,7 @@ int main(int argc, char *argv[]) {
 	vertices[t + 1] = polygon_vertices_b[s + 1];
 	vertices[t + 2] = polygon_vertices_b[s + 2];
 	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
+	vertices[t + 4] = 0.0f;
 	vertices[t + 5] = 1.0f;
 	t += 6;
 	vertices[t] = 0;
@@ -367,7 +367,14 @@ int main(int argc, char *argv[]) {
 
 	// render loop
 	glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
-
+	bool rot = false;
+	bool turn_table = false;
+	bool new_cam_pos1 = false;
+	bool new_cam_pos2 = false;
+	bool make_move = false;
+	float displace_x = 0;
+	float displace_y = 0;
+	float displace_z = 0;
 	while (!glfwWindowShouldClose(window)) {
 		// print stuff for better understanding
 		/*
@@ -386,52 +393,114 @@ int main(int argc, char *argv[]) {
 		// make transformations
 		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
 
-		// transform = glm::rotate(transform, (float)glfwGetTime()*0 ,
-		// 						glm::vec3(1.0f, 1.0f, 1.0f));
-
-		// transform =
-		// 	glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 1.5,
-		// 									glm::sin(glfwGetTime()) + 1.5,
-		// 									glm::sin(glfwGetTime()) + 1.5));
-
-		ourShader.use();
-		ourShader.setMat4("transform", transform);
-
-		// view matrix
-		// glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+		if (turn_table) {
 			const float radius = 10.0f;
 
 			float camX = sin(glfwGetTime()) * radius;
 			float camZ = cos(glfwGetTime()) * radius;
 			view = glm::lookAt(glm::vec3(camX, 0.0, camZ),
 							   glm::vec3(0.0, 0.0, 0.0),
-							   glm::vec3(0.0, 1.0, 0.0));
-		} else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+							   glm::vec3(0.0, -1.0, 0.0));
+							   
+		}
+		if (rot) {
+			transform = glm::rotate(transform, (float)glfwGetTime(),
+									glm::vec3(1.0f, 0.0f, 0.0f));
+			
+		}
+
+		if (new_cam_pos1) {
+			view =
+				glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
+							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+		}
+		if (new_cam_pos2) {
+			view =
+				glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
+							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+		}
+		// transform =
+		// 	glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 1.5,
+		// 									glm::sin(glfwGetTime()) + 1.5,
+		// 									glm::sin(glfwGetTime()) + 1.5));
+
+		ourShader.use();
+	
+
+		// view matrix
+		// glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
+
+	if(glfwGetKey(window, GLFW_KEY_X)==GLFW_PRESS)
+	{
+			transform =
+			glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 0.01 ,
+											glm::sin(glfwGetTime()) ,
+											glm::sin(glfwGetTime()) ));
+	}
+
+
+
+
+		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+			new_cam_pos1 = true;
+			new_cam_pos2 = false;
+			rot = false;
+			turn_table = false;
+		}
+		else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+			new_cam_pos2 = true;
+			new_cam_pos1 = false;
+			rot = false;
+			turn_table = false;
+		}
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			if (rot) {
+				rot = false;
+			} else {
+				// std::cout << "toggled = rotting\n";
+				rot = true;
+			}
+		}
+		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+			if (turn_table) {
+				turn_table = false;
+			} else {
+				// std::cout << "turn table = rotting\n";
+				turn_table = true;
+			}
+		}
+
+		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
 			view =
 				glm::lookAt(glm::vec3(10.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0),
 							glm::vec3(0.0, 0.0, 1.0));
-		} else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		}
+		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
 			view =
 				glm::lookAt(glm::vec3(-10.0, 0.0, 0.0),
 							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
-		} else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		}
+		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 			view =
 				glm::lookAt(glm::vec3(0.0, -10.0, 0.0),
 							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
-		} else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		}
+		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 			view =
 				glm::lookAt(glm::vec3(0.0, 10.0, 0.0), glm::vec3(0.0, 0.0, 0.0),
 							glm::vec3(0.0, 0.0, 1.0));
-		} else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+		}
+		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
 			view =
 				glm::lookAt(glm::vec3(0.0, 0.0, 10.0), glm::vec3(0.0, 0.0, 0.0),
 							glm::vec3(0.0, 1.0, 0.0));
-		} else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+		}
+		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
 			view =
 				glm::lookAt(glm::vec3(0.0, 0.0, -10.0),
 							glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, .0));
 		}
+			ourShader.setMat4("transform", transform);
 		ourShader.setMat4("view", view);
 
 		// projection matrix
