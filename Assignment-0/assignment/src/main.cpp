@@ -1,11 +1,13 @@
-#include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
+#include "camera.h"
 #include "shader.h"
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
@@ -15,8 +17,10 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
 
-int main()
-{
+// camera
+Camera camera(glm::vec3(1.0f, 1.0f, 10.0f));
+
+int main() {
 	// glfw: initialize and configure
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -30,8 +34,7 @@ int main()
 	// glfw window creation
 	GLFWwindow *window =
 		glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-	if (window == NULL)
-	{
+	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
@@ -40,8 +43,7 @@ int main()
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// glad: load all OpenGL function pointers
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	{
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
@@ -51,21 +53,62 @@ int main()
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // left
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,  // right
-		0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,	  // top
-		-0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f};
+		0.5f, 0.5f, 0.5f,  1.0f, 0.0f, 0.0f, 
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  
+		0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,
 
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3};
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  
+		0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
+		
+		0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 0.0f, 
+		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 
 
-	unsigned int VBO, VAO, EBO;
+		0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 0.0f, 
+		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 
 
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+		0.5f, 0.5f, 0.5f,  0.0f, 0.0f, 1.0f, 
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+
+
+		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
+		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 
+		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+
+		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
+	
+		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
+		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
+		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
+
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+		-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 
+		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
+
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
+		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
+
+	};
+
+	unsigned int NUM_VERTICES = (sizeof(vertices) / sizeof(vertices[0])) / 6;
+
+	unsigned int VBO, VAO;
 	glGenVertexArrays(1, &VAO);
-
+	glGenBuffers(1, &VBO);
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s),
 	// and then configure vertex attributes(s).
 	glBindVertexArray(VAO);
@@ -73,14 +116,13 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
 	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+						  (void *)0);
 	glEnableVertexAttribArray(0);
 	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+						  (void *)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
 	// note that this is allowed, the call to glVertexAttribPointer registered
@@ -94,43 +136,53 @@ int main()
 	// VBOs) when it's not directly necessary.
 	glBindVertexArray(0);
 
+	// enable depth testing for 3d
+	glEnable(GL_DEPTH_TEST);
+
 	// render loop
-	while (!glfwWindowShouldClose(window))
-	{
+	while (!glfwWindowShouldClose(window)) {
+		// print stuff for better understanding
+		/*
+		printf("\n");
+		printf("Camera Position: %0.3f %0.3f %0.3f\n", camera.Position.x,
+			   camera.Position.y, camera.Position.z);
+		*/
+
 		// input
 		processInput(window);
 
 		// render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	 // create transformations
-        glm::mat4 transform = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-        transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-        transform = glm::rotate(transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		// make transformations
+		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
 
-        // get matrix's uniform location and set matrix
-        ourShader.use();
-        unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
- ourShader.use();
-		/*		unsigned int transformLoc =
-					glGetUniformLocation(ourShader.ID, "transform");
-				glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
-								   glm::value_ptr(transform));
-		*/
+		transform = glm::rotate(transform, (float)glfwGetTime(),
+								glm::vec3(1.0f, 0.0f, 0.0f));
 
-		float timeValue = glfwGetTime();
-		float greenValue = sin(timeValue) / 2.0f + 0.5f;
-		int vertexColorLocation = glGetUniformLocation(ourShader.ID, "ourColor");
-		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+		// transform =
+		// 	glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 1.5,
+		// 									glm::sin(glfwGetTime()) + 1.5,
+		// 									glm::sin(glfwGetTime()) + 1.5));
 
-		glBindVertexArray(VAO); // seeing as we only have a single VAO there's
-								// no need to bind it every time, but we'll do
-								// so to keep things a bit more organized
+		ourShader.use();
+		ourShader.setMat4("transform", transform);
 
-		// glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// view matrix
+		glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
+		ourShader.setMat4("view", view);
+
+		// projection matrix
+		glm::mat4 projection = glm::perspective(
+			glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT,
+			0.1f, 100.0f);
+		ourShader.setMat4("projection", projection);
+
+		glBindVertexArray(VAO);  // seeing as we only have a single VAO there's
+		// no need to bind it every time, but we'll do
+		// so to keep things a bit more organized
+		glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
 		// glBindVertexArray(0); // no need to unbind it every time
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse
@@ -150,16 +202,14 @@ int main()
 
 // process all input: query GLFW whether relevant keys are pressed/released this
 // frame and react accordingly
-void processInput(GLFWwindow *window)
-{
+void processInput(GLFWwindow *window) {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
 // function executes
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
 	// make sure the viewport matches the new window dimensions; note that width
 	// and height will be significantly larger than specified on retina
 	// displays.
