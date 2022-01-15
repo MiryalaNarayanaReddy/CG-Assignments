@@ -18,7 +18,7 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 800;
 
 // camera
-Camera camera(glm::vec3(1.0f, 1.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 
 int main(int argc, char *argv[]) {
 	// glfw: initialize and configure
@@ -366,6 +366,8 @@ int main(int argc, char *argv[]) {
 	glEnable(GL_DEPTH_TEST);
 
 	// render loop
+	glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
+
 	while (!glfwWindowShouldClose(window)) {
 		// print stuff for better understanding
 		/*
@@ -384,8 +386,8 @@ int main(int argc, char *argv[]) {
 		// make transformations
 		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
 
-		transform = glm::rotate(transform, (float)glfwGetTime(),
-								glm::vec3(0.5f, 1.0f, 0.5f));
+		// transform = glm::rotate(transform, (float)glfwGetTime()*0 ,
+		// 						glm::vec3(1.0f, 1.0f, 1.0f));
 
 		// transform =
 		// 	glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 1.5,
@@ -396,7 +398,40 @@ int main(int argc, char *argv[]) {
 		ourShader.setMat4("transform", transform);
 
 		// view matrix
-		glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
+		// glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			const float radius = 10.0f;
+
+			float camX = sin(glfwGetTime()) * radius;
+			float camZ = cos(glfwGetTime()) * radius;
+			view = glm::lookAt(glm::vec3(camX, 0.0, camZ),
+							   glm::vec3(0.0, 0.0, 0.0),
+							   glm::vec3(0.0, 1.0, 0.0));
+		} else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+			view =
+				glm::lookAt(glm::vec3(10.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0),
+							glm::vec3(0.0, 0.0, 1.0));
+		} else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+			view =
+				glm::lookAt(glm::vec3(-10.0, 0.0, 0.0),
+							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+		} else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+			view =
+				glm::lookAt(glm::vec3(0.0, -10.0, 0.0),
+							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+		} else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+			view =
+				glm::lookAt(glm::vec3(0.0, 10.0, 0.0), glm::vec3(0.0, 0.0, 0.0),
+							glm::vec3(0.0, 0.0, 1.0));
+		} else if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+			view =
+				glm::lookAt(glm::vec3(0.0, 0.0, 10.0), glm::vec3(0.0, 0.0, 0.0),
+							glm::vec3(0.0, 1.0, 0.0));
+		} else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+			view =
+				glm::lookAt(glm::vec3(0.0, 0.0, -10.0),
+							glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, .0));
+		}
 		ourShader.setMat4("view", view);
 
 		// projection matrix
