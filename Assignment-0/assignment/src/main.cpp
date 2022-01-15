@@ -1,11 +1,11 @@
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-
+#include <glad/glad.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
+#include <string>
 
 #include "camera.h"
 #include "shader.h"
@@ -20,7 +20,7 @@ const unsigned int SCR_HEIGHT = 800;
 // camera
 Camera camera(glm::vec3(1.0f, 1.0f, 10.0f));
 
-int main() {
+int main(int argc, char *argv[]) {
 	// glfw: initialize and configure
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -52,58 +52,284 @@ int main() {
 	Shader ourShader("../src/vertex.shader", "../src/fragment.shader");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
-	float vertices[] = {
-		0.5f, 0.5f, 0.5f,  1.0f, 0.0f, 0.0f, 
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  
-		0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,
 
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,  
-		0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-		
-		0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 0.0f, 
-		0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 
+	int n = std::stoi(argv[1]);
+	std::cout << n << "\n";
+	float polygon_vertices_a[3 * n];
+	float polygon_vertices_b[3 * n];
+	float theta = (2 * M_PI / n);
+	for (int i = 0; i < n; i++) {
+		int x = 3 * i;
 
-		0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 0.0f, 
-		-0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 
+		polygon_vertices_a[x] = 0.5 * cos(i * theta);
+		polygon_vertices_a[x + 1] = 0.5 * sin(i * theta);
+		polygon_vertices_a[x + 2] = 0.5;
 
-		0.5f, 0.5f, 0.5f,  0.0f, 0.0f, 1.0f, 
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+		polygon_vertices_b[x] = 0.5 * cos(i * theta);
+		polygon_vertices_b[x + 1] = 0.5 * sin(i * theta);
+		polygon_vertices_b[x + 2] = -0.5;
+	}
 
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
-		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 
+	float vertices[4 * n * 3 * 6];  // total 4n triangles 3 vertices each vertex
+									// needs 6 floats
 
+	for (int i = 1; i < n; i++) {
+		int x = 3 * (6 * (i));
+		int y = 3 * i;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
 
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
-		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+		x += 6;
+		y -= 3;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
 
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
+		x += 6;
+		vertices[x] = 0;
+		vertices[x + 1] = 0;
+		vertices[x + 2] = 0.5;
+		vertices[x + 3] = 0.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 0.0f;
+	}
+	int t = 0;
+	int s = 3 * (n - 1);
+	vertices[t] = polygon_vertices_a[s];
+	vertices[t + 1] = polygon_vertices_a[s + 1];
+	vertices[t + 2] = polygon_vertices_a[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
 
-		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
-	
-		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-		-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
-		0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f, 
+	t += 6;
+	s = 0;
+	vertices[t] = polygon_vertices_a[s];
+	vertices[t + 1] = polygon_vertices_a[s + 1];
+	vertices[t + 2] = polygon_vertices_a[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+	t += 6;
+	vertices[t] = 0;
+	vertices[t + 1] = 0;
+	vertices[t + 2] = 0.5;
+	vertices[t + 3] = 0.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 0.0f;
 
-		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-		-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
+	for (int i = 1; i < n; i++) {
+		int x = 3 * n * 6 + 3 * (6 * i);
+		int y = 3 * i;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
 
-		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f, 
+		x += 6;
+		y -= 3;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
 
-	};
+		x += 6;
+		vertices[x] = 0;
+		vertices[x + 1] = 0;
+		vertices[x + 2] = -0.5;
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 0.0f;
+		vertices[x + 5] = 1.0f;
+	}
 
+	t = 3 * n * 6;
+	s = 3 * (n - 1);
+	vertices[t] = polygon_vertices_b[s];
+	vertices[t + 1] = polygon_vertices_b[s + 1];
+	vertices[t + 2] = polygon_vertices_b[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+
+	t += 6;
+	s = 0;
+	vertices[t] = polygon_vertices_b[s];
+	vertices[t + 1] = polygon_vertices_b[s + 1];
+	vertices[t + 2] = polygon_vertices_b[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+	t += 6;
+	vertices[t] = 0;
+	vertices[t + 1] = 0;
+	vertices[t + 2] = -0.5;
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 0.0f;
+	vertices[t + 5] = 1.0f;
+
+	///////////////////////////////
+
+	for (int i = 1; i < n; i++) {
+		int x = 2 * 3 * n * 6 + 3 * (6 * (i));
+		int y = 3 * i;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
+
+		x += 6;
+		y -= 3;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
+
+		x += 6;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 0.0f;
+	}
+	t = 2 * 3 * n * 6;
+	s = 3 * (n - 1);
+	vertices[t] = polygon_vertices_a[s];
+	vertices[t + 1] = polygon_vertices_a[s + 1];
+	vertices[t + 2] = polygon_vertices_a[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+
+	t += 6;
+	s = 0;
+	vertices[t] = polygon_vertices_a[s];
+	vertices[t + 1] = polygon_vertices_a[s + 1];
+	vertices[t + 2] = polygon_vertices_a[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+
+	t += 6;
+	s = 3 * (n - 1);
+	vertices[t] = polygon_vertices_b[s];
+	vertices[t + 1] = polygon_vertices_b[s + 1];
+	vertices[t + 2] = polygon_vertices_b[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 0.0f;
+
+	for (int i = 1; i < n; i++) {
+		int x = 3 * 3 * n * 6 + 3 * (6 * i);
+		int y = 3 * i;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
+
+		x += 6;
+		y -= 3;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 1.0f;
+		vertices[x + 5] = 1.0f;
+
+		x += 6;
+		y += 3;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0f;
+		vertices[x + 4] = 0.0f;
+		vertices[x + 5] = 0.0f;
+	}
+
+	t = 3 * 3 * n * 6;
+	s = 3 * (n - 1);
+	vertices[t] = polygon_vertices_b[s];
+	vertices[t + 1] = polygon_vertices_b[s + 1];
+	vertices[t + 2] = polygon_vertices_b[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+
+	t += 6;
+	s = 0;
+	vertices[t] = polygon_vertices_b[s];
+	vertices[t + 1] = polygon_vertices_b[s + 1];
+	vertices[t + 2] = polygon_vertices_b[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 1.0f;
+	vertices[t + 5] = 1.0f;
+	t += 6;
+	s = 0;
+	vertices[t] = polygon_vertices_a[s];
+	vertices[t + 1] = polygon_vertices_a[s + 1];
+	vertices[t + 2] = polygon_vertices_a[s + 2];
+	vertices[t + 3] = 1.0f;
+	vertices[t + 4] = 0.0f;
+	vertices[t + 5] = 0.0f;
+
+	/*
+
+		float vertices[] = {
+			0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.5f,  0.5f,  -0.5f,
+			1.0f,  0.0f,  0.0f,  0.5f,  -0.5f, 0.5f,  1.0f,  0.0f,  0.0f,
+
+			0.5f,  0.5f,  -0.5f, 1.0f,  0.0f,  0.0f,  0.5f,  -0.5f, 0.5f,
+			1.0f,  0.0f,  0.0f,  0.5f,  -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+
+			0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f,
+			0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  -0.5f, 0.0f,  1.0f,  0.0f,
+
+			0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  -0.5f,
+			0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+
+			0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  0.5f,
+			0.0f,  0.0f,  1.0f,  0.5f,  -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,
+
+			-0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.5f,  -0.5f, 0.5f,
+			0.0f,  0.0f,  1.0f,  -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,
+
+			0.5f,  -0.5f, 0.5f,  0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, 0.5f,
+			0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, -0.5f, 0.0f,  1.0f,  1.0f,
+
+			0.5f,  -0.5f, -0.5f, 0.0f,  1.0f,  1.0f,  0.5f,  -0.5f, 0.5f,
+			0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, -0.5f, 0.0f,  1.0f,  1.0f,
+
+			-0.5f, -0.5f, -0.5f, 1.0f,  1.0f,  0.0f,  0.5f,  -0.5f, -0.5f,
+			1.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f, 1.0f,  1.0f,  0.0f,
+
+			-0.5f, -0.5f, -0.5f, 1.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  -0.5f,
+			1.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f, 1.0f,  1.0f,  0.0f,
+
+			-0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  -0.5f,
+			1.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  0.5f,  1.0f,  0.0f,  1.0f,
+
+			-0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  1.0f,  -0.5f, -0.5f, 0.5f,
+			1.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  0.5f,  1.0f,  0.0f,  1.0f,
+
+		};
+	*/
 	unsigned int NUM_VERTICES = (sizeof(vertices) / sizeof(vertices[0])) / 6;
 
 	unsigned int VBO, VAO;
@@ -159,7 +385,7 @@ int main() {
 		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
 
 		transform = glm::rotate(transform, (float)glfwGetTime(),
-								glm::vec3(1.0f, 0.0f, 0.0f));
+								glm::vec3(0.5f, 1.0f, 0.5f));
 
 		// transform =
 		// 	glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 1.5,
