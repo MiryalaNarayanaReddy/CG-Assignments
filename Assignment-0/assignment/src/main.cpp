@@ -177,159 +177,172 @@ int main(int argc, char *argv[]) {
 	vertices[t + 3] = 1.0f;
 	vertices[t + 4] = 0.0f;
 	vertices[t + 5] = 1.0f;
+	int cr1 = 1.0, cg1 = 1.0, cb1 = 0.0;
+	int cr2 = 1.0, cg2 = 0.0, cb2 = 0.0;
 
 	///////////////////////////////
 
-	for (int i = 1; i < n; i++) {
+	for (int i = 0; i < n - 1; i++) {
 		int x = 2 * 3 * n * 6 + 3 * (6 * (i));
 		int y = 3 * i;
 		vertices[x] = polygon_vertices_a[y];
 		vertices[x + 1] = polygon_vertices_a[y + 1];
 		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 1.0f;
-
-		x += 6;
-		y -= 3;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 1.0f;
-
-		x += 6;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 0.0f;
-	}
-	t = 2 * 3 * n * 6;
-	s = 3 * (n - 1);
-	vertices[t] = polygon_vertices_a[s];
-	vertices[t + 1] = polygon_vertices_a[s + 1];
-	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 1.0f;
-
-	t += 6;
-	s = 0;
-	vertices[t] = polygon_vertices_a[s];
-	vertices[t + 1] = polygon_vertices_a[s + 1];
-	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 1.0f;
-
-	t += 6;
-	s = 3 * (n - 1);
-	vertices[t] = polygon_vertices_b[s];
-	vertices[t + 1] = polygon_vertices_b[s + 1];
-	vertices[t + 2] = polygon_vertices_b[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 0.0f;
-
-	for (int i = 1; i < n; i++) {
-		int x = 3 * 3 * n * 6 + 3 * (6 * i);
-		int y = 3 * i;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 1.0f;
-
-		x += 6;
-		y -= 3;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 1.0f;
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = i % 2;
+		vertices[x + 5] = 0.0;
 
 		x += 6;
 		y += 3;
 		vertices[x] = polygon_vertices_a[y];
 		vertices[x + 1] = polygon_vertices_a[y + 1];
 		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 0.0f;
-		vertices[x + 5] = 0.0f;
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = i % 2;
+		vertices[x + 5] = 0.0;
+		x += 6;
+		y -= 3;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = i % 2;
+		vertices[x + 5] = 0.0;
+
+		x = 3 * 3 * n * 6 + 3 * (6 * (i));
+
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = i % 2;
+		vertices[x + 5] = 0.0;
+
+		x += 6;
+		y += 3;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = i % 2;
+		vertices[x + 5] = 0.0;
+		x += 6;
+
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = i % 2;
+		vertices[x + 5] = 0.0;
 	}
 
-	t = 3 * 3 * n * 6;
-	s = 3 * (n - 1);
-	vertices[t] = polygon_vertices_b[s];
-	vertices[t + 1] = polygon_vertices_b[s + 1];
-	vertices[t + 2] = polygon_vertices_b[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 1.0f;
+	if (n % 2 == 0) {
+		int x = 2 * 3 * n * 6 + 3 * (6 * (n - 1));
+		int y = 3 * (n - 1);
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 0.0;
 
-	t += 6;
-	s = 0;
-	vertices[t] = polygon_vertices_b[s];
-	vertices[t + 1] = polygon_vertices_b[s + 1];
-	vertices[t + 2] = polygon_vertices_b[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 1.0f;
-	t += 6;
-	s = 0;
-	vertices[t] = polygon_vertices_a[s];
-	vertices[t + 1] = polygon_vertices_a[s + 1];
-	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 0.0f;
-	vertices[t + 5] = 0.0f;
+		x += 6;
+		y = 0;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 0.0;
+		x += 6;
+		y = 3 * (n - 1);
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 0.0;
 
-	/*
+		x = 3 * 3 * n * 6 + 3 * (6 * (n - 1));
 
-		float vertices[] = {
-			0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.5f,  0.5f,  -0.5f,
-			1.0f,  0.0f,  0.0f,  0.5f,  -0.5f, 0.5f,  1.0f,  0.0f,  0.0f,
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 0.0;
 
-			0.5f,  0.5f,  -0.5f, 1.0f,  0.0f,  0.0f,  0.5f,  -0.5f, 0.5f,
-			1.0f,  0.0f,  0.0f,  0.5f,  -0.5f, -0.5f, 1.0f,  0.0f,  0.0f,
+		x += 6;
+		y = 0;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 0.0;
+		x += 6;
 
-			0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f,
-			0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  -0.5f, 0.0f,  1.0f,  0.0f,
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 1.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 0.0;
 
-			0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  -0.5f,
-			0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	} else {
+		int x = 2 * 3 * n * 6 + 3 * (6 * (n - 1));
+		int y = 3 * (n - 1);
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 0.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 1.0;
 
-			0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  0.5f,
-			0.0f,  0.0f,  1.0f,  0.5f,  -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,
+		x += 6;
+		y = 0;
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 0.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 1.0;
+		x += 6;
+		y = 3 * (n - 1);
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 0.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 1.0;
 
-			-0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.5f,  -0.5f, 0.5f,
-			0.0f,  0.0f,  1.0f,  -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  1.0f,
+		x = 3 * 3 * n * 6 + 3 * (6 * (n - 1));
 
-			0.5f,  -0.5f, 0.5f,  0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, 0.5f,
-			0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, -0.5f, 0.0f,  1.0f,  1.0f,
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 0.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 1.0;
 
-			0.5f,  -0.5f, -0.5f, 0.0f,  1.0f,  1.0f,  0.5f,  -0.5f, 0.5f,
-			0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, -0.5f, 0.0f,  1.0f,  1.0f,
+		x += 6;
+		y = 0;
+		vertices[x] = polygon_vertices_b[y];
+		vertices[x + 1] = polygon_vertices_b[y + 1];
+		vertices[x + 2] = polygon_vertices_b[y + 2];
+		vertices[x + 3] = 0.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 1.0;
+		x += 6;
 
-			-0.5f, -0.5f, -0.5f, 1.0f,  1.0f,  0.0f,  0.5f,  -0.5f, -0.5f,
-			1.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f, 1.0f,  1.0f,  0.0f,
+		vertices[x] = polygon_vertices_a[y];
+		vertices[x + 1] = polygon_vertices_a[y + 1];
+		vertices[x + 2] = polygon_vertices_a[y + 2];
+		vertices[x + 3] = 0.0;
+		vertices[x + 4] = (n - 1) % 2;
+		vertices[x + 5] = 1.0;
+	}
 
-			-0.5f, -0.5f, -0.5f, 1.0f,  1.0f,  0.0f,  -0.5f, 0.5f,  -0.5f,
-			1.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f, 1.0f,  1.0f,  0.0f,
-
-			-0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  -0.5f,
-			1.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  0.5f,  1.0f,  0.0f,  1.0f,
-
-			-0.5f, -0.5f, -0.5f, 1.0f,  0.0f,  1.0f,  -0.5f, -0.5f, 0.5f,
-			1.0f,  0.0f,  1.0f,  -0.5f, 0.5f,  0.5f,  1.0f,  0.0f,  1.0f,
-
-		};
-	*/
 	unsigned int NUM_VERTICES = (sizeof(vertices) / sizeof(vertices[0])) / 6;
 
 	unsigned int VBO, VAO;
@@ -375,14 +388,8 @@ int main(int argc, char *argv[]) {
 	float displace_x = 0;
 	float displace_y = 0;
 	float displace_z = 0;
-	while (!glfwWindowShouldClose(window)) {
-		// print stuff for better understanding
-		/*
-		printf("\n");
-		printf("Camera Position: %0.3f %0.3f %0.3f\n", camera.Position.x,
-			   camera.Position.y, camera.Position.z);
-		*/
 
+	while (!glfwWindowShouldClose(window)) {
 		// input
 		processInput(window);
 
@@ -393,66 +400,75 @@ int main(int argc, char *argv[]) {
 		// make transformations
 		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
 
-		if (turn_table) {
-			const float radius = 10.0f;
+		{
+			if (turn_table) {
+				const float radius = 10.0f;
 
-			float camX = sin(glfwGetTime()) * radius;
-			float camZ = cos(glfwGetTime()) * radius;
-			view = glm::lookAt(glm::vec3(camX, 0.0, camZ),
-							   glm::vec3(0.0, 0.0, 0.0),
-							   glm::vec3(0.0, -1.0, 0.0));
-							   
+				float camX = sin(glfwGetTime()) * radius;
+				float camZ = cos(glfwGetTime()) * radius;
+				view = glm::lookAt(glm::vec3(camX, 0.0, camZ),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, -1.0, 0.0));
+			}
+			if (rot) {
+				transform = glm::rotate(transform, (float)glfwGetTime(),
+										glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+
+			if (new_cam_pos1) {
+				view = glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
+			}
+			if (new_cam_pos2) {
+				view = glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
+			}
+
+			ourShader.use();
 		}
-		if (rot) {
-			transform = glm::rotate(transform, (float)glfwGetTime(),
-									glm::vec3(1.0f, 0.0f, 0.0f));
-			
+
+		// translate
+		{
+			if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+				displace_x += 0.05;
+			}
+			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+				displace_z += 0.05;
+			}
+			if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+				displace_y += 0.05;
+			}
+			if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+				displace_x -= 0.05;
+			}
+			if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+				displace_y -= 0.05;
+			}
+			if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+				displace_z -= 0.05;
+			}
+			transform = glm::translate(
+				transform, glm::vec3(displace_x, displace_y, displace_z));
 		}
 
-		if (new_cam_pos1) {
-			view =
-				glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
-							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
+		// prism fashion show
+		{
+			if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+				new_cam_pos1 = true;
+				new_cam_pos2 = false;
+				rot = false;
+				turn_table = false;
+			} else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+				new_cam_pos2 = true;
+				new_cam_pos1 = false;
+				rot = false;
+				turn_table = false;
+			}
 		}
-		if (new_cam_pos2) {
-			view =
-				glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
-							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
-		}
-		// transform =
-		// 	glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 1.5,
-		// 									glm::sin(glfwGetTime()) + 1.5,
-		// 									glm::sin(glfwGetTime()) + 1.5));
 
-		ourShader.use();
-	
-
-		// view matrix
-		// glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
-
-	if(glfwGetKey(window, GLFW_KEY_X)==GLFW_PRESS)
-	{
-			transform =
-			glm::scale(transform, glm::vec3(glm::sin(glfwGetTime()) + 0.01 ,
-											glm::sin(glfwGetTime()) ,
-											glm::sin(glfwGetTime()) ));
-	}
-
-
-
-
-		if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
-			new_cam_pos1 = true;
-			new_cam_pos2 = false;
-			rot = false;
-			turn_table = false;
-		}
-		else if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
-			new_cam_pos2 = true;
-			new_cam_pos1 = false;
-			rot = false;
-			turn_table = false;
-		}
+		// rotating
 		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
 			if (rot) {
 				rot = false;
@@ -461,6 +477,8 @@ int main(int argc, char *argv[]) {
 				rot = true;
 			}
 		}
+
+		// turntables
 		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
 			if (turn_table) {
 				turn_table = false;
@@ -470,53 +488,66 @@ int main(int argc, char *argv[]) {
 			}
 		}
 
-		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-			view =
-				glm::lookAt(glm::vec3(10.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 0.0),
-							glm::vec3(0.0, 0.0, 1.0));
+		// flying camera
+		{
+			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+				view = glm::lookAt(glm::vec3(10.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+			}
+			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+				view = glm::lookAt(glm::vec3(-10.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+			}
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+				view = glm::lookAt(glm::vec3(0.0, -10.0, 0.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+			}
+			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+				view = glm::lookAt(glm::vec3(0.0, 10.0, 0.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+			}
+			if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+				view = glm::lookAt(glm::vec3(0.0, 0.0, 10.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 1.0, 0.0));
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+			}
+			if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+				view = glm::lookAt(glm::vec3(0.0, 0.0, -10.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 1.0, 0.0));
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+			}
 		}
-		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-			view =
-				glm::lookAt(glm::vec3(-10.0, 0.0, 0.0),
-							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
-		}
-		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-			view =
-				glm::lookAt(glm::vec3(0.0, -10.0, 0.0),
-							glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0));
-		}
-		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-			view =
-				glm::lookAt(glm::vec3(0.0, 10.0, 0.0), glm::vec3(0.0, 0.0, 0.0),
-							glm::vec3(0.0, 0.0, 1.0));
-		}
-		if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-			view =
-				glm::lookAt(glm::vec3(0.0, 0.0, 10.0), glm::vec3(0.0, 0.0, 0.0),
-							glm::vec3(0.0, 1.0, 0.0));
-		}
-		if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-			view =
-				glm::lookAt(glm::vec3(0.0, 0.0, -10.0),
-							glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, .0));
-		}
-			ourShader.setMat4("transform", transform);
+
+		ourShader.setMat4("transform", transform);
 		ourShader.setMat4("view", view);
 
 		// projection matrix
 		glm::mat4 projection = glm::perspective(
 			glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT,
 			0.1f, 100.0f);
+
 		ourShader.setMat4("projection", projection);
 
-		glBindVertexArray(VAO);  // seeing as we only have a single VAO there's
-		// no need to bind it every time, but we'll do
-		// so to keep things a bit more organized
-		glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
-		// glBindVertexArray(0); // no need to unbind it every time
+		glBindVertexArray(VAO);
 
-		// glfw: swap buffers and poll IO events (keys pressed/released, mouse
-		// moved etc.)
+		glDrawArrays(GL_TRIANGLES, 0, NUM_VERTICES);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
