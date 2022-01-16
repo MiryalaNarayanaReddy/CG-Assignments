@@ -72,277 +72,281 @@ int main(int argc, char *argv[]) {
 
 	float vertices[4 * n * 3 * 6];  // total 4n triangles 3 vertices each vertex
 									// needs 6 floats
+	// two polygon creation
+	{
+		for (int i = 1; i < n; i++) {
+			int x = 3 * (6 * (i));
+			int y = 3 * i;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 0.0f;
+			vertices[x + 4] = 1.0f;
+			vertices[x + 5] = 0.0f;
 
-	for (int i = 1; i < n; i++) {
-		int x = 3 * (6 * (i));
-		int y = 3 * i;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 0.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 0.0f;
+			x += 6;
+			y -= 3;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 0.0f;
+			vertices[x + 4] = 1.0f;
+			vertices[x + 5] = 0.0f;
 
-		x += 6;
-		y -= 3;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 0.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 0.0f;
+			x += 6;
+			vertices[x] = 0;
+			vertices[x + 1] = 0;
+			vertices[x + 2] = 0.5;
+			vertices[x + 3] = 0.0f;
+			vertices[x + 4] = 1.0f;
+			vertices[x + 5] = 0.0f;
+		}
+		int t = 0;
+		int s = 3 * (n - 1);
+		vertices[t] = polygon_vertices_a[s];
+		vertices[t + 1] = polygon_vertices_a[s + 1];
+		vertices[t + 2] = polygon_vertices_a[s + 2];
+		vertices[t + 3] = 0.0f;
+		vertices[t + 4] = 1.0f;
+		vertices[t + 5] = 0.0f;
 
-		x += 6;
-		vertices[x] = 0;
-		vertices[x + 1] = 0;
-		vertices[x + 2] = 0.5;
-		vertices[x + 3] = 0.0f;
-		vertices[x + 4] = 1.0f;
-		vertices[x + 5] = 0.0f;
+		t += 6;
+		s = 0;
+		vertices[t] = polygon_vertices_a[s];
+		vertices[t + 1] = polygon_vertices_a[s + 1];
+		vertices[t + 2] = polygon_vertices_a[s + 2];
+		vertices[t + 3] = 0.0f;
+		vertices[t + 4] = 1.0f;
+		vertices[t + 5] = 0.0f;
+		t += 6;
+		vertices[t] = 0;
+		vertices[t + 1] = 0;
+		vertices[t + 2] = 0.5;
+		vertices[t + 3] = 0.0f;
+		vertices[t + 4] = 1.0f;
+		vertices[t + 5] = 0.0f;
+
+		for (int i = 1; i < n; i++) {
+			int x = 3 * n * 6 + 3 * (6 * i);
+			int y = 3 * i;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0f;
+			vertices[x + 4] = 0.0f;
+			vertices[x + 5] = 1.0f;
+
+			x += 6;
+			y -= 3;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0f;
+			vertices[x + 4] = 0.0f;
+			vertices[x + 5] = 1.0f;
+
+			x += 6;
+			vertices[x] = 0;
+			vertices[x + 1] = 0;
+			vertices[x + 2] = -0.5;
+			vertices[x + 3] = 1.0f;
+			vertices[x + 4] = 0.0f;
+			vertices[x + 5] = 1.0f;
+		}
+
+		t = 3 * n * 6;
+		s = 3 * (n - 1);
+		vertices[t] = polygon_vertices_b[s];
+		vertices[t + 1] = polygon_vertices_b[s + 1];
+		vertices[t + 2] = polygon_vertices_b[s + 2];
+		vertices[t + 3] = 1.0f;
+		vertices[t + 4] = 0.0f;
+		vertices[t + 5] = 1.0f;
+
+		t += 6;
+		s = 0;
+		vertices[t] = polygon_vertices_b[s];
+		vertices[t + 1] = polygon_vertices_b[s + 1];
+		vertices[t + 2] = polygon_vertices_b[s + 2];
+		vertices[t + 3] = 1.0f;
+		vertices[t + 4] = 0.0f;
+		vertices[t + 5] = 1.0f;
+		t += 6;
+		vertices[t] = 0;
+		vertices[t + 1] = 0;
+		vertices[t + 2] = -0.5;
+		vertices[t + 3] = 1.0f;
+		vertices[t + 4] = 0.0f;
+		vertices[t + 5] = 1.0f;
+		int cr1 = 1.0, cg1 = 1.0, cb1 = 0.0;
+		int cr2 = 1.0, cg2 = 0.0, cb2 = 0.0;
 	}
-	int t = 0;
-	int s = 3 * (n - 1);
-	vertices[t] = polygon_vertices_a[s];
-	vertices[t + 1] = polygon_vertices_a[s + 1];
-	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 0.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 0.0f;
-
-	t += 6;
-	s = 0;
-	vertices[t] = polygon_vertices_a[s];
-	vertices[t + 1] = polygon_vertices_a[s + 1];
-	vertices[t + 2] = polygon_vertices_a[s + 2];
-	vertices[t + 3] = 0.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 0.0f;
-	t += 6;
-	vertices[t] = 0;
-	vertices[t + 1] = 0;
-	vertices[t + 2] = 0.5;
-	vertices[t + 3] = 0.0f;
-	vertices[t + 4] = 1.0f;
-	vertices[t + 5] = 0.0f;
-
-	for (int i = 1; i < n; i++) {
-		int x = 3 * n * 6 + 3 * (6 * i);
-		int y = 3 * i;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 0.0f;
-		vertices[x + 5] = 1.0f;
-
-		x += 6;
-		y -= 3;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 0.0f;
-		vertices[x + 5] = 1.0f;
-
-		x += 6;
-		vertices[x] = 0;
-		vertices[x + 1] = 0;
-		vertices[x + 2] = -0.5;
-		vertices[x + 3] = 1.0f;
-		vertices[x + 4] = 0.0f;
-		vertices[x + 5] = 1.0f;
-	}
-
-	t = 3 * n * 6;
-	s = 3 * (n - 1);
-	vertices[t] = polygon_vertices_b[s];
-	vertices[t + 1] = polygon_vertices_b[s + 1];
-	vertices[t + 2] = polygon_vertices_b[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 0.0f;
-	vertices[t + 5] = 1.0f;
-
-	t += 6;
-	s = 0;
-	vertices[t] = polygon_vertices_b[s];
-	vertices[t + 1] = polygon_vertices_b[s + 1];
-	vertices[t + 2] = polygon_vertices_b[s + 2];
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 0.0f;
-	vertices[t + 5] = 1.0f;
-	t += 6;
-	vertices[t] = 0;
-	vertices[t + 1] = 0;
-	vertices[t + 2] = -0.5;
-	vertices[t + 3] = 1.0f;
-	vertices[t + 4] = 0.0f;
-	vertices[t + 5] = 1.0f;
-	int cr1 = 1.0, cg1 = 1.0, cb1 = 0.0;
-	int cr2 = 1.0, cg2 = 0.0, cb2 = 0.0;
-
 	///////////////////////////////
+	
+	// coloring rectangles
 
-	for (int i = 0; i < n - 1; i++) {
-		int x = 2 * 3 * n * 6 + 3 * (6 * (i));
-		int y = 3 * i;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = i % 2;
-		vertices[x + 5] = 0.0;
+	{
+		for (int i = 0; i < n - 1; i++) {
+			int x = 2 * 3 * n * 6 + 3 * (6 * (i));
+			int y = 3 * i;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = i % 2;
+			vertices[x + 5] = 0.0;
 
-		x += 6;
-		y += 3;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = i % 2;
-		vertices[x + 5] = 0.0;
-		x += 6;
-		y -= 3;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = i % 2;
-		vertices[x + 5] = 0.0;
+			x += 6;
+			y += 3;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = i % 2;
+			vertices[x + 5] = 0.0;
+			x += 6;
+			y -= 3;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = i % 2;
+			vertices[x + 5] = 0.0;
 
-		x = 3 * 3 * n * 6 + 3 * (6 * (i));
+			x = 3 * 3 * n * 6 + 3 * (6 * (i));
 
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = i % 2;
-		vertices[x + 5] = 0.0;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = i % 2;
+			vertices[x + 5] = 0.0;
 
-		x += 6;
-		y += 3;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = i % 2;
-		vertices[x + 5] = 0.0;
-		x += 6;
+			x += 6;
+			y += 3;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = i % 2;
+			vertices[x + 5] = 0.0;
+			x += 6;
 
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = i % 2;
-		vertices[x + 5] = 0.0;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = i % 2;
+			vertices[x + 5] = 0.0;
+		}
+
+		if (n % 2 == 0) {
+			int x = 2 * 3 * n * 6 + 3 * (6 * (n - 1));
+			int y = 3 * (n - 1);
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 0.0;
+
+			x += 6;
+			y = 0;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 0.0;
+			x += 6;
+			y = 3 * (n - 1);
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 0.0;
+
+			x = 3 * 3 * n * 6 + 3 * (6 * (n - 1));
+
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 0.0;
+
+			x += 6;
+			y = 0;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 0.0;
+			x += 6;
+
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 1.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 0.0;
+
+		} else {
+			int x = 2 * 3 * n * 6 + 3 * (6 * (n - 1));
+			int y = 3 * (n - 1);
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 0.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 1.0;
+
+			x += 6;
+			y = 0;
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 0.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 1.0;
+			x += 6;
+			y = 3 * (n - 1);
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 0.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 1.0;
+
+			x = 3 * 3 * n * 6 + 3 * (6 * (n - 1));
+
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 0.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 1.0;
+
+			x += 6;
+			y = 0;
+			vertices[x] = polygon_vertices_b[y];
+			vertices[x + 1] = polygon_vertices_b[y + 1];
+			vertices[x + 2] = polygon_vertices_b[y + 2];
+			vertices[x + 3] = 0.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 1.0;
+			x += 6;
+
+			vertices[x] = polygon_vertices_a[y];
+			vertices[x + 1] = polygon_vertices_a[y + 1];
+			vertices[x + 2] = polygon_vertices_a[y + 2];
+			vertices[x + 3] = 0.0;
+			vertices[x + 4] = (n - 1) % 2;
+			vertices[x + 5] = 1.0;
+		}
 	}
-
-	if (n % 2 == 0) {
-		int x = 2 * 3 * n * 6 + 3 * (6 * (n - 1));
-		int y = 3 * (n - 1);
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 0.0;
-
-		x += 6;
-		y = 0;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 0.0;
-		x += 6;
-		y = 3 * (n - 1);
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 0.0;
-
-		x = 3 * 3 * n * 6 + 3 * (6 * (n - 1));
-
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 0.0;
-
-		x += 6;
-		y = 0;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 0.0;
-		x += 6;
-
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 1.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 0.0;
-
-	} else {
-		int x = 2 * 3 * n * 6 + 3 * (6 * (n - 1));
-		int y = 3 * (n - 1);
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 0.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 1.0;
-
-		x += 6;
-		y = 0;
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 0.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 1.0;
-		x += 6;
-		y = 3 * (n - 1);
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 0.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 1.0;
-
-		x = 3 * 3 * n * 6 + 3 * (6 * (n - 1));
-
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 0.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 1.0;
-
-		x += 6;
-		y = 0;
-		vertices[x] = polygon_vertices_b[y];
-		vertices[x + 1] = polygon_vertices_b[y + 1];
-		vertices[x + 2] = polygon_vertices_b[y + 2];
-		vertices[x + 3] = 0.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 1.0;
-		x += 6;
-
-		vertices[x] = polygon_vertices_a[y];
-		vertices[x + 1] = polygon_vertices_a[y + 1];
-		vertices[x + 2] = polygon_vertices_a[y + 2];
-		vertices[x + 3] = 0.0;
-		vertices[x + 4] = (n - 1) % 2;
-		vertices[x + 5] = 1.0;
-	}
-
 	unsigned int NUM_VERTICES = (sizeof(vertices) / sizeof(vertices[0])) / 6;
 
 	unsigned int VBO, VAO;
@@ -387,11 +391,14 @@ int main(int argc, char *argv[]) {
 	bool new_cam_pos1 = false;
 	bool new_cam_pos2 = false;
 	bool make_move = false;
+	bool tran_slate = false;
 	float displace_x = 0;
 	float displace_y = 0;
 	float displace_z = 0;
 	float fly_theta = 0, fly_phi = 0;
 	float radius = 10;
+	float fly_x = 0, fly_y = 0, fly_z = 10;
+
 	while (!glfwWindowShouldClose(window)) {
 		// input
 		processInput(window);
@@ -402,6 +409,48 @@ int main(int argc, char *argv[]) {
 
 		// make transformations
 		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
+
+		// translate
+		{
+			if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+				displace_x += 0.05;
+				tran_slate = true;
+			}
+			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+				displace_z += 0.05;
+				tran_slate = true;
+			}
+			if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
+				displace_y += 0.05;
+				tran_slate = true;
+			}
+			if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
+				displace_x -= 0.05;
+				tran_slate = true;
+			}
+			if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
+				displace_y -= 0.05;
+				tran_slate = true;
+			}
+			if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
+				displace_z -= 0.05;
+				tran_slate = true;
+			}
+			transform = glm::translate(
+				transform, glm::vec3(displace_x, displace_y, displace_z));
+		}
+
+		// rotating
+		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
+			if (rot) {
+				rot = false;
+			} else {
+				// std::cout << "toggled = rotting\n";
+				rot = true;
+			}
+		}
+
+		// turn (and) rot(a)ting tables
 		{
 			if (turn_table) {
 				const float radius = 10.0f;
@@ -417,42 +466,119 @@ int main(int argc, char *argv[]) {
 										glm::vec3(1.0f, 0.0f, 0.0f));
 			}
 
-			if (new_cam_pos1) {
-				view = glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
-			}
-			if (new_cam_pos2) {
-				view = glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
-			}
-
 			ourShader.use();
 		}
 
-		// translate
+		// turntables
+		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
+			if (turn_table) {
+				turn_table = false;
+			} else {
+				// std::cout << "turn table = rotting\n";
+				turn_table = true;
+			}
+		}
+
+		// 3D circular rotation
+		// flying camera
+		// {
+		// 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+		// 		radius -= 0.1;
+		// 		new_cam_pos2 = false;
+		// 		new_cam_pos1 = false;
+		// 	}
+		// 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+		// 		radius += 0.1;
+		// 		new_cam_pos2 = false;
+		// 		new_cam_pos1 = false;
+		// 	}
+		// 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+		// 		fly_phi--;
+		// 		new_cam_pos2 = false;
+		// 		new_cam_pos1 = false;
+		// 	}
+		// 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+		// 		fly_phi++;
+		// 		new_cam_pos2 = false;
+		// 		new_cam_pos1 = false;
+		// 	}
+		// 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+		// 		fly_theta++;
+		// 		new_cam_pos2 = false;
+		// 		new_cam_pos1 = false;
+		// 	}
+		// 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+		// 		fly_theta--;
+		// 		new_cam_pos2 = false;
+		// 		new_cam_pos1 = false;
+		// 	}
+		// 	glm::vec3 cameraTarget =
+		// 		glm::vec3(displace_x, displace_y, displace_z);
+		// 	glm::vec3 cameraPos =
+		// 		glm::vec3(radius * cos(M_PI * fly_theta / 180) *
+		// 					  cos(M_PI * fly_phi / 180),
+		// 				  radius * cos(M_PI * fly_theta / 180) *
+		// 					  sin(M_PI * fly_phi / 180),
+		// 				  radius * sin(M_PI * fly_theta / 180));
+		// 	if (!turn_table) {
+		// 		view = glm::lookAt(
+		// 			cameraPos, glm::vec3(0, 0, 0),
+		// 			glm::normalize(glm::vec3(-sin(M_PI * fly_theta / 180) *
+		// 										 cos(M_PI * fly_phi / 180),
+		// 									 -sin(M_PI * fly_theta / 180) *
+		// 										 sin(M_PI * fly_phi / 180),
+		// 									 cos(M_PI * fly_theta / 180))));
+		// 	}
+		// }
+
+		// flying camera
 		{
-			if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-				displace_x += 0.05;
+			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+				fly_z -= 0.1;
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+				tran_slate = false;
 			}
-			if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-				displace_z += 0.05;
+			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+				fly_z += 0.1;
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+				tran_slate = false;
 			}
-			if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS) {
-				displace_y += 0.05;
+			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+				fly_x -= 0.1;
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+				tran_slate = false;
 			}
-			if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS) {
-				displace_x -= 0.05;
+			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+				fly_x += 0.1;
+
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+				tran_slate = false;
 			}
-			if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) {
-				displace_y -= 0.05;
+			if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+				fly_y += 0.1;
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+				tran_slate = false;
 			}
-			if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-				displace_z -= 0.05;
+			if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+				fly_y -= 0.1;
+				new_cam_pos2 = false;
+				new_cam_pos1 = false;
+				tran_slate = false;
 			}
-			transform = glm::translate(
-				transform, glm::vec3(displace_x, displace_y, displace_z));
+			if (!tran_slate) {
+				glm::vec3 cameraTarget =
+					glm::vec3(displace_x, displace_y, displace_z);
+				glm::vec3 cameraPos = glm::vec3(fly_x, fly_y, fly_z);
+				if (!turn_table) {
+					view = glm::lookAt(cameraPos, cameraTarget,
+									   glm::vec3(0, 1, 0));
+				}
+			}
 		}
 
 		// prism fashion show
@@ -468,75 +594,17 @@ int main(int argc, char *argv[]) {
 				rot = false;
 				turn_table = false;
 			}
-		}
 
-		// rotating
-		if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS) {
-			if (rot) {
-				rot = false;
-			} else {
-				// std::cout << "toggled = rotting\n";
-				rot = true;
+			if (new_cam_pos1) {
+				view = glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
 			}
-		}
-
-		// turntables
-		if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS) {
-			if (turn_table) {
-				turn_table = false;
-			} else {
-				// std::cout << "turn table = rotting\n";
-				turn_table = true;
+			if (new_cam_pos2) {
+				view = glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
+								   glm::vec3(0.0, 0.0, 0.0),
+								   glm::vec3(0.0, 0.0, 1.0));
 			}
-		}
-		// flying camera
-		{
-			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-				radius += 0.1;
-				new_cam_pos2 = false;
-				new_cam_pos1 = false;
-			}
-			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-				radius -= 0.1;
-				new_cam_pos2 = false;
-				new_cam_pos1 = false;
-			}
-			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-				fly_phi--;
-				new_cam_pos2 = false;
-				new_cam_pos1 = false;
-			}
-			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-				fly_phi++;
-
-				new_cam_pos2 = false;
-				new_cam_pos1 = false;
-			}
-			if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-				fly_theta++;
-				new_cam_pos2 = false;
-				new_cam_pos1 = false;
-			}
-			if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-				fly_theta--;
-				new_cam_pos2 = false;
-				new_cam_pos1 = false;
-			}
-
-			glm::vec3 cameraTarget =
-				glm::vec3(displace_x, displace_y, displace_z);
-			glm::vec3 cameraPos =
-				glm::vec3(radius * cos(M_PI * fly_theta / 180) *
-							  cos(M_PI * fly_phi / 180),
-						  radius * cos(M_PI * fly_theta / 180) *
-							  sin(M_PI * fly_phi / 180),
-						  radius * sin(M_PI * fly_theta / 180));
-			view = glm::lookAt(
-				cameraPos, cameraTarget,
-				glm::normalize(glm::vec3(
-					-sin(M_PI * fly_theta / 180) * cos(M_PI * fly_phi / 180),
-					-sin(M_PI * fly_theta / 180) * sin(M_PI * fly_phi / 180),
-					cos(M_PI * fly_theta / 180))));
 		}
 
 		ourShader.setMat4("transform", transform);
