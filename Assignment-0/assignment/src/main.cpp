@@ -380,6 +380,8 @@ int main(int argc, char *argv[]) {
 
 	// render loop
 	glm::mat4 view = camera.GetViewMatrix(glm::vec3(0.0f));
+	glm::vec3 camera_up = glm::vec3(0, 0, 1);
+
 	bool rot = false;
 	bool turn_table = false;
 	bool new_cam_pos1 = false;
@@ -388,7 +390,8 @@ int main(int argc, char *argv[]) {
 	float displace_x = 0;
 	float displace_y = 0;
 	float displace_z = 0;
-
+	float fly_theta = 0, fly_phi = 0;
+	float radius = 10;
 	while (!glfwWindowShouldClose(window)) {
 		// input
 		processInput(window);
@@ -399,7 +402,6 @@ int main(int argc, char *argv[]) {
 
 		// make transformations
 		glm::mat4 transform = glm::mat4(1.0f);  // identity matrix
-
 		{
 			if (turn_table) {
 				const float radius = 10.0f;
@@ -487,51 +489,54 @@ int main(int argc, char *argv[]) {
 				turn_table = true;
 			}
 		}
-
 		// flying camera
 		{
 			if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-				view = glm::lookAt(glm::vec3(10.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
+				radius += 0.1;
 				new_cam_pos2 = false;
 				new_cam_pos1 = false;
 			}
 			if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-				view = glm::lookAt(glm::vec3(-10.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
+				radius -= 0.1;
 				new_cam_pos2 = false;
 				new_cam_pos1 = false;
 			}
 			if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-				view = glm::lookAt(glm::vec3(0.0, -10.0, 0.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
+				fly_phi--;
 				new_cam_pos2 = false;
 				new_cam_pos1 = false;
 			}
 			if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-				view = glm::lookAt(glm::vec3(0.0, 10.0, 0.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
+				fly_phi++;
+
 				new_cam_pos2 = false;
 				new_cam_pos1 = false;
 			}
 			if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-				view = glm::lookAt(glm::vec3(0.0, 0.0, 10.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 1.0, 0.0));
+				fly_theta++;
 				new_cam_pos2 = false;
 				new_cam_pos1 = false;
 			}
 			if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-				view = glm::lookAt(glm::vec3(0.0, 0.0, -10.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 1.0, 0.0));
+				fly_theta--;
 				new_cam_pos2 = false;
 				new_cam_pos1 = false;
 			}
+
+			glm::vec3 cameraTarget =
+				glm::vec3(displace_x, displace_y, displace_z);
+			glm::vec3 cameraPos =
+				glm::vec3(radius * cos(M_PI * fly_theta / 180) *
+							  cos(M_PI * fly_phi / 180),
+						  radius * cos(M_PI * fly_theta / 180) *
+							  sin(M_PI * fly_phi / 180),
+						  radius * sin(M_PI * fly_theta / 180));
+			view = glm::lookAt(
+				cameraPos, cameraTarget,
+				glm::normalize(glm::vec3(
+					-sin(M_PI * fly_theta / 180) * cos(M_PI * fly_phi / 180),
+					-sin(M_PI * fly_theta / 180) * sin(M_PI * fly_phi / 180),
+					cos(M_PI * fly_theta / 180))));
 		}
 
 		ourShader.setMat4("transform", transform);
