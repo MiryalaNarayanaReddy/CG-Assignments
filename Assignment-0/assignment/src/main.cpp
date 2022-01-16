@@ -182,7 +182,7 @@ int main(int argc, char *argv[]) {
 		int cr2 = 1.0, cg2 = 0.0, cb2 = 0.0;
 	}
 	///////////////////////////////
-	
+
 	// coloring rectangles
 
 	{
@@ -447,6 +447,9 @@ int main(int argc, char *argv[]) {
 			} else {
 				// std::cout << "toggled = rotting\n";
 				rot = true;
+				tran_slate = false;
+				new_cam_pos1 = false;
+				new_cam_pos2 = false;
 			}
 		}
 
@@ -457,9 +460,10 @@ int main(int argc, char *argv[]) {
 
 				float camX = sin(glfwGetTime()) * radius;
 				float camZ = cos(glfwGetTime()) * radius;
-				view = glm::lookAt(glm::vec3(camX, 0.0, camZ),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, -1.0, 0.0));
+				view = glm::lookAt(
+					glm::vec3(displace_x + camX, displace_y, displace_z + camZ),
+					glm::vec3(displace_x, displace_y, displace_z),
+					glm::vec3(0.0, 1.0, 0.0));
 			}
 			if (rot) {
 				transform = glm::rotate(transform, (float)glfwGetTime(),
