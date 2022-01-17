@@ -468,7 +468,7 @@ int main(int argc, char *argv[]) {
 				transform = glm::rotate(transform, (float)glfwGetTime(),
 										glm::vec3(1.0f, 0.0f, 0.0f));
 			}
-transform = glm::translate(
+			transform = glm::translate(
 				transform, glm::vec3(displace_x, displace_y, displace_z));
 			ourShader.use();
 		}
@@ -600,14 +600,16 @@ transform = glm::translate(
 			}
 
 			if (new_cam_pos1) {
-				view = glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
+				view =
+					glm::lookAt(glm::vec3(5.0, 5.0, 5.0),
+								glm::vec3(displace_x, displace_y, displace_z),
+								glm::vec3(0.0, 0.0, 1.0));
 			}
 			if (new_cam_pos2) {
-				view = glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
-								   glm::vec3(0.0, 0.0, 0.0),
-								   glm::vec3(0.0, 0.0, 1.0));
+				view =
+					glm::lookAt(glm::vec3(-5.0, -5.0, -5.0),
+								glm::vec3(displace_x, displace_y, displace_z),
+								glm::vec3(0.0, 0.0, 1.0));
 			}
 		}
 
