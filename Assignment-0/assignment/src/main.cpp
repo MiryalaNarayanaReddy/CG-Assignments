@@ -436,8 +436,7 @@ int main(int argc, char *argv[]) {
 				displace_z -= 0.05;
 				tran_slate = true;
 			}
-			transform = glm::translate(
-				transform, glm::vec3(displace_x, displace_y, displace_z));
+			
 		}
 
 		// rotating
@@ -447,7 +446,7 @@ int main(int argc, char *argv[]) {
 			} else {
 				// std::cout << "toggled = rotting\n";
 				rot = true;
-				tran_slate = false;
+				// tran_slate = false;
 				new_cam_pos1 = false;
 				new_cam_pos2 = false;
 			}
@@ -469,7 +468,8 @@ int main(int argc, char *argv[]) {
 				transform = glm::rotate(transform, (float)glfwGetTime(),
 										glm::vec3(1.0f, 0.0f, 0.0f));
 			}
-
+transform = glm::translate(
+				transform, glm::vec3(displace_x, displace_y, displace_z));
 			ourShader.use();
 		}
 
