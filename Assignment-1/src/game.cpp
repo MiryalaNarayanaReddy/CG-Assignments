@@ -8,18 +8,26 @@
 ******************************************************************/
 #include "game.h"
 
+#include <bits/stdc++.h>
+#include <unistd.h>
 #include <cstdlib>
 #include <ctime>
 #include <iostream>
-
+#include <wait.h>
 #include "enemy_object.h"
 #include "game_object.h"
 #include "resource_manager.h"
 #include "sprite_renderer.h"
 
+#ifdef FREE_TYPE
+#include "text_render.h"
+TextRenderer *Text;
+#endif
+
 // Game-related State data
 SpriteRenderer *Renderer;
 GameObject *Player;
+
 // EnemyObject *Enemy;
 
 // Initial velocity of the Enemy
@@ -36,7 +44,12 @@ Game::~Game() {
 }
 
 void Game::Init() {
-	// load shaders
+// load shaders
+#ifdef FREE_TYPE
+	Text = new TextRenderer(this->Width, this->Height);
+	Text->Load("fonts/ocraext.TTF", 24);
+#endif
+	this->score = 0;
 	ResourceManager::LoadShader(
 		"/home/narayana/Assignment-1/src/shaders/sprite.vs",
 		"/home/narayana/Assignment-1/src/shaders/sprite.frag", nullptr,
@@ -66,16 +79,21 @@ void Game::Init() {
 		"/home/narayana/Assignment-1/src/textures/enemy.png", true, "enemy");
 	ResourceManager::LoadTexture(
 		"/home/narayana/Assignment-1/src/textures/coin.png", true, "coin");
+	ResourceManager::LoadTexture(
+		"/home/narayana/Assignment-1/src/textures/game_over.png", true, "gameover");
+	ResourceManager::LoadTexture(
+		"/home/narayana/Assignment-1/src/textures/game_win.png", true, "gamewin");
 	// ResourceManager::LoadTexture("/home/narayana/Assignment-1/src/textures/paddle.png",
 	// true, "paddle"); load levels
 	GameLevel one;
-	one.Load("/home/narayana/Assignment-1/src/levels/one.lvl", this->Width,
+	one.Load(1, this->Width,
 			 this->Height);
-	GameLevel two; two.Load("/home/narayana/Assignment-1/src/levels/two.lvl",
-	this->Width, this->Height);
-	 GameLevel three;
-	 three.Load("/home/narayana/Assignment-1/src/levels/three.lvl",
-	 this->Width, this->Height);
+	GameLevel two;
+	two.Load(2, this->Width,
+			 this->Height);
+	GameLevel three;
+	three.Load(3, this->Width,
+			   this->Height);
 	// GameLevel four;
 	// four.Load("/home/narayana/Assignment-1/src/levels/four.lvl", this->Width,
 	// this->Height / 2);
@@ -96,27 +114,37 @@ void Game::Update(float dt) {
 	// // check for collisions
 	// this->DoCollisions();
 	// Enemy->Move(dt, this->Width, this->Height);
-
+	if(this->State == GAME_OVER||this->State==GAME_WIN)
+	{	sleep(2);
+		this->~Game();
+	}
 	for (int i = 0; i < this->Levels[this->Level].Enemies.size(); i++) {
 		this->Levels[this->Level].Enemies[i].Move(dt, this->Width,
 												  this->Height);
 	}
 	this->DoCollisions();
 	bool all_coins = true;
-	for(int i=0;i<this->Levels[this->Level].coins.size();i++)
-	{
-		if(!this->Levels[this->Level].coins[i].Destroyed)
-		{
+	for (int i = 0; i < this->Levels[this->Level].coins.size(); i++) {
+		if (!this->Levels[this->Level].coins[i].Destroyed) {
 			all_coins = false;
 		}
 	}
 
-	if(all_coins)
-	{
-		if (Player->Position.x > this->Width*(8.0f/10)&&Player->Position.y>this->Height*(2.0f/5)&&Player->Position.y<this->Height*(3.0f/5))
-		{
-			this->Level   = this->Level+1;
-			std::cout<<"next level\n";
+	if (all_coins) {
+		if (Player->Position.x > this->Width * (8.0f / 10) &&
+			Player->Position.y > this->Height * (2.0f / 5) &&
+			Player->Position.y < this->Height * (3.0f / 5)) {
+			if(this->Level == 2)
+			{
+				this->State = GAME_WIN;
+			}
+			else
+			{
+				this->Level = this->Level + 1;
+				Player->Position.x = 0;
+				Player->Position.y = this->Height / 2 - PLAYER_SIZE.y / 2;
+				std::cout << "next level\n";
+			}
 		}
 	}
 }
@@ -175,18 +203,42 @@ void Game::Render() {
 		this->Levels[this->Level].Draw(*Renderer);
 		// draw player
 		Player->Draw(*Renderer);
+		
+#ifdef FREE_TYPE
+		std::stringstream ss;
+		ss << this->score;
+		Text->RenderText("Lives:" + ss.str(), 5.0f, 5.0f, 1.0f);
+#endif
 	}
+	else if(this->State==GAME_OVER){
+		Texture2D temp = ResourceManager::GetTexture("gameover");
+		Renderer->DrawSprite(temp, glm::vec2(this->Width*(2.0f/10), this->Height*(2.0f/5)),
+							 glm::vec2(this->Width/2, this->Height/2), 0.0f);
+
+	}else if(this->State==GAME_WIN){
+		Texture2D temp = ResourceManager::GetTexture("gamewin");
+		Renderer->DrawSprite(temp, glm::vec2(this->Width*(2.0f/10), this->Height*(2.0f/5)),
+							 glm::vec2(this->Width/2, this->Height/2), 0.0f);
+
+	}
+
 }
 
 void Game::DoCollisions() {
 	for (int i = 0; i < this->Levels[this->Level].Enemies.size(); i++) {
 		if (CheckCollision(this->Levels[this->Level].Enemies[i], *Player)) {
-			std::cout << "game over\n";
+
+			this->State = GAME_OVER;
+			std::cout<<"gameover\n";
 		}
 	}
 	for (int i = 0; i < this->Levels[this->Level].coins.size(); i++) {
 		if (CheckCollision(this->Levels[this->Level].coins[i], *Player)) {
-		this->Levels[this->Level].coins[i].Destroyed = true;
+			if (!this->Levels[this->Level].coins[i].Destroyed) {
+				this->Levels[this->Level].coins[i].Destroyed = true;
+				this->score++;
+				std::cout << "Score = " << this->score << "\n";
+			}
 		}
 	}
 }

@@ -28,19 +28,19 @@ glm::vec2 GameObject::Move(float dt, unsigned int window_width,
 	this->Position += this->Velocity * dt;
 	// then check if outside window bounds and if so, reverse velocity and
 	// restore at correct position
-	if (this->Position.x <= 0.0f) {
+	if (this->Position.x <= window_width*(1.0f/10)) {
 		this->Velocity.x = -this->Velocity.x;
-		this->Position.x = 0.0f;
-	} else if (this->Position.x + this->Size.x >= window_width) {
+		this->Position.x = window_width*(1.0f/10);
+	} else if (this->Position.x + this->Size.x >= window_width*(9.0f/10)) {
 		this->Velocity.x = -this->Velocity.x;
-		this->Position.x = window_width - this->Size.x;
+		this->Position.x = window_width*(9.0f/10) - this->Size.x;
 	}
-	if (this->Position.y <= 0.0f) {
+	if (this->Position.y <= window_height*(1.0f/5)) {
 		this->Velocity.y = -this->Velocity.y;
-		this->Position.y = 0.0f;
-	} else if (this->Position.y + this->Size.y >= window_height) {
+		this->Position.y =window_height*(1.0f/5);
+	} else if (this->Position.y + this->Size.y >= window_height*(4.0f/5)) {
 		this->Velocity.y = -this->Velocity.y;
-		this->Position.y = window_height - this->Size.y;
+		this->Position.y = window_height*(4.0f/5) - this->Size.y;
 	}
 
 	return this->Position;
