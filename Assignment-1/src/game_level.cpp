@@ -59,16 +59,19 @@ void create_level(int n, std::vector<std::vector<unsigned int>> &tileData) {
 	}
 	for (int i = 0; i < c; i++) {
 		level[0][i] = 1;
-		if (n != 3) {
-			level[3][i] = 0;
-		}
+		level[rand()%5+1][i] = 0;
 		level[r - 1][i] = 1;
 	}
+	level[1][rand()%8+1] = 3;
+	level[3][rand()%8+1] = 3;
+	level[5][rand()%8+1] = 3;
+	level[2][rand()%8+1] = 2;
 	for (int i = 0; i < r; i++) {
 		level[i][0] = 1;
 		level[i][c - 1] = 1;
 	}
 	level[3][0] = 0;
+	level[3][1] = 0;
 	level[3][c - 1] = 0;
 
 	std::vector<unsigned int> row;
