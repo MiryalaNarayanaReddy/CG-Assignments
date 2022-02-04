@@ -16,7 +16,8 @@
 #include "game_object.h"
 #include "sprite_renderer.h"
 #include "resource_manager.h"
-
+#include "coin_object.h"
+#include "enemy_object.h"
 
 /// GameLevel holds all Tiles as part of a Breakout level and 
 /// hosts functionality to Load/render levels from the harddisk.
@@ -25,6 +26,8 @@ class GameLevel
 public:
     // level state
     std::vector<GameObject> Bricks;
+    std::vector<EnemyObject> Enemies;
+    std::vector<CoinObject> Coins;
     // constructor
     GameLevel() { }
     // loads level from file
