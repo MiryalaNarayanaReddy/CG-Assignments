@@ -19,3 +19,29 @@ void GameObject::Draw(SpriteRenderer &renderer)
 {
     renderer.DrawSprite(this->Sprite, this->Position, this->Size, this->Rotation, this->Color);
 }
+
+glm::vec2 GameObject::Move(float dt, unsigned int window_width,
+							unsigned int window_height) {
+	// if not stuck to player board
+
+	// move the enemy
+	this->Position += this->Velocity * dt;
+	// then check if outside window bounds and if so, reverse velocity and
+	// restore at correct position
+	if (this->Position.x <= 0.0f) {
+		this->Velocity.x = -this->Velocity.x;
+		this->Position.x = 0.0f;
+	} else if (this->Position.x + this->Size.x >= window_width) {
+		this->Velocity.x = -this->Velocity.x;
+		this->Position.x = window_width - this->Size.x;
+	}
+	if (this->Position.y <= 0.0f) {
+		this->Velocity.y = -this->Velocity.y;
+		this->Position.y = 0.0f;
+	} else if (this->Position.y + this->Size.y >= window_height) {
+		this->Velocity.y = -this->Velocity.y;
+		this->Position.y = window_height - this->Size.y;
+	}
+
+	return this->Position;
+}
