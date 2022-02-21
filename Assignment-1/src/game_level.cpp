@@ -20,20 +20,20 @@ void create_level(int n, std::vector<std::vector<unsigned int>> &tileData) {
 		for (int i = 1; i < r - 1; i++) {
 			level[i][0] = rand() % 5;
 			level[i][1] = rand() % 5;
-	        
-            level[i][5] = rand() % 5;
+									
+			level[i][5] = rand() % 5;
 			level[i][6] = rand() % 5;
 
 			if (level[i][0] == 1) {
 				level[i][0] = 0;
 			}
-            	if (level[i][1] == 1) {
+			if (level[i][1] == 1) {
 				level[i][1] = 0;
 			}
-            	if (level[i][5] == 1) {
+			if (level[i][5] == 1) {
 				level[i][5] = 0;
 			}
-            	if (level[i][6] == 1) {
+			if (level[i][6] == 1) {
 				level[i][6] = 0;
 			}
 		}

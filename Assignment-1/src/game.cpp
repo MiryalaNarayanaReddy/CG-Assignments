@@ -66,6 +66,7 @@ void Game::Init() {
 		glm::ortho(0.0f, static_cast<float>(this->Width),
 				   static_cast<float>(this->Height), 0.0f, -1.0f, 1.0f);
 	ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
+	// ResourceManager::GetShader("lighting").Use().SetInteger("light", 1);
 	ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
 	// set render-specific controls
 	Shader temp = ResourceManager::GetShader("sprite");
@@ -148,6 +149,7 @@ void Game::Update(float dt) {
 				Player->Position.y = this->Height / 2 - PLAYER_SIZE.y / 2;
 				std::cout << "next level\n";
 				sleep(2);
+				std::cout << "Level = " << this->Level+1;
 			}
 		}
 	}
@@ -234,6 +236,7 @@ void Game::DoCollisions() {
 		if (CheckCollision(this->Levels[this->Level].Enemies[i], *Player)) {
 			this->State = GAME_OVER;
 			std::cout << "gameover\n";
+			sleep(2);
 		}
 	}
 	for (int i = 0; i < this->Levels[this->Level].coins.size(); i++) {
