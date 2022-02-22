@@ -2,9 +2,9 @@ import * as THREE from '../node_modules/three/build/three.module.js';
 import { create_ocean } from './ocean.js';
 import { create_pirate_ship } from './pirate_ship.js';
 import { create_ship } from './ship.js';
-import {create_treasurebox} from './treasure_box'
+import {create_treasurebox} from './treasure_box';
 import { ship_pos_x, ship_pos_y, ship_pos_z, camera_top_view} from './global_variables.js';
-
+import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
 ship_pos_x = 0
 ship_pos_y = 0
@@ -13,8 +13,11 @@ ship_pos_z = 0
 
 function create_camera() {
 	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-	camera.position.set(ship_pos_x, ship_pos_y - 1, ship_pos_z + 1)
-	camera.lookAt(camera.position.x, camera.position.y + 1, camera.position.z)
+	// camera.position.set(ship_pos_x, ship_pos_y - 1, ship_pos_z + 1)
+	camera.position.set(10, 10, 10)
+	// camera.lookAt(camera.position.x, camera.position.y + 1, camera.position.z)
+	// camera.lookAt(3, 3, 0)
+	
 	return camera
 }
 
@@ -22,7 +25,7 @@ function create_light() {
 	const color = 0xFFFFFF;
 	const intensity = 1;
 	const light = new THREE.DirectionalLight(color, intensity);
-	light.position.set(camera.position.x, camera.position.y, camera.position.z);
+	light.position.set(100, 100, 100);
 	return light;
 }
 
@@ -43,12 +46,37 @@ var camera = create_camera()
 var light = create_light()
 var pirate_object = create_pirate_ship()
 
-scene.add(ocean_object.object)
-scene.add(ship_object.object)
-scene.add(treasurebox_object.object)
-scene.add(pirate_object.object)
+// scene.add(ocean_object.object)
+// scene.add(ship_object.object)
+// scene.add(treasurebox_object.object)
+// scene.add(pirate_object.object)
 scene.add(camera)
 scene.add(light)
+
+
+
+//////////////////     blender object
+var loader = new GLTFLoader();
+
+loader.load('/dist/treasure_chest/scene.gltf', 
+	function (gltf) {
+		var object = gltf.scene;
+		object.position.set(3,3,0);
+	 object.scale.set(.1*object.scale.x, .1*object.scale.y, .1 * object.scale.z)
+	camera.lookAt(object.position.x,object.position.y,object.position.z)
+		scene.add(object);
+	
+	},
+
+	function (xhr) {
+		console.log((xhr.loaded / xhr.total * 100 ) + '% loaded' );
+	},
+
+	function (error) {
+		console.log( 'An error happened = ', error );
+	}
+);
+
 
 //////////////////////////// event listeners
 

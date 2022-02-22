@@ -8,7 +8,7 @@ function create_ship() {
 	const texture = new THREE.TextureLoader()
 	.load(
 		//  [
-		'/treasurebox/ship.png',
+		'/dist/treasurebox/ship.png',
 		// '/js/treasurebox/face.png',
 		// '/js/treasurebox/face.png',
 		// '/js/treasurebox/face2.png',
