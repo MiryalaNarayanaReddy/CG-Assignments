@@ -32,6 +32,7 @@ function create_ocean() {
 //////// ship
 
 
+
 function create_ship() {
 
 	const geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -40,7 +41,7 @@ function create_ship() {
 	const texture = new THREE.TextureLoader()
 	.load(
 		//  [
-		'/js/treasurebox/face2.png',
+		'/js/treasurebox/ship.png',
 		// '/js/treasurebox/face.png',
 		// '/js/treasurebox/face.png',
 		// '/js/treasurebox/face2.png',
@@ -56,6 +57,17 @@ function create_ship() {
 	return ship_object
 }
 
+/// pirate ship
+function create_pirate_ship() {
+
+	const geometry = new THREE.BoxGeometry(1, 1, 1);
+
+	const material = new THREE.MeshBasicMaterial({ color: 0xffffaa });
+	const shipp = new THREE.Mesh(geometry, material);
+	shipp.position.set(ship_pos_x+4, ship_pos_y+4, ship_pos_z)
+	shipp_object = new game_object(shipp, false)
+	return shipp_object
+}
 
 /////// treasure
 
@@ -111,10 +123,12 @@ ship_object = create_ship()
 treasurebox_object = create_treasurebox()
 camera = create_camera()
 light = create_light()
+pirate_object = create_pirate_ship()
 
 scene.add(ocean_object.object)
 scene.add(ship_object.object)
 scene.add(treasurebox_object.object)
+scene.add(pirate_object.object)
 scene.add(camera)
 scene.add(light)
 
