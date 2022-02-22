@@ -1,19 +1,33 @@
 import * as THREE from '../node_modules/three/build/three.module.js';
 import { game_object } from './gameobject.js';
-import { ship_pos_x, ship_pos_y, ship_pos_z } from './global_variables.js';
+import { ship_pos_x, ship_pos_y, ship_pos_z,scene } from './global_variables.js';
+import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 
-function create_treasurebox() {
+function create_treasurebox(x,y,z) {
 
-	const geometry = new THREE.BoxGeometry(1, 1, 1);
+	var loader = new GLTFLoader();
 
-	const texture = new THREE.TextureLoader().load( 'treasurebox/face.png' );
-	const material = new THREE.MeshBasicMaterial({ color: 0xffff00, map:texture });
+	loader.load('/dist/treasure_chest/scene.gltf',
+		function (gltf) {
+			var object = gltf.scene;
+			object.rotation.x = -80;
+			object.rotation.z = 0;
+			object.rotation.y = -80;
+			object.position.set(x,y,z+.01 * object.scale.z/2);
+			
+			object.scale.set(.01 * object.scale.x, .01 * object.scale.y, .01 * object.scale.z)
+			scene.add(object)
+		},
 
-	const treasurebox = new THREE.Mesh(geometry, material);
+		function (xhr) {
+			console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		},
 
-	treasurebox.position.set(2, 6, 0)
-	var treasurebox_object = new game_object(treasurebox, false)
-	return treasurebox_object
+		function (error) {
+			console.log('An error happened = ', error);
+		}
+	);
+
 }
 
-export {create_treasurebox}
+export { create_treasurebox }
