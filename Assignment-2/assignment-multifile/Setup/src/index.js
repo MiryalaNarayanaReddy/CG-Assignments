@@ -13,37 +13,26 @@ import {
 
 } from './global_variables'
 
+import {Update_game} from './update_game'
+
+
+/***************************************************code */
 
 
 game_init();
 
-
-function animate() {
-	requestAnimationFrame(animate);
-	render();
-	stats.update();
-}
-
-
 function render() {
 
-	// const time = performance.now() * 0.001;
-
-	// mesh.position.y = Math.sin(time) * 20 + 5;
-	// mesh.rotation.x = time * 0.5;
-	// mesh.rotation.z = time * 0.51;
-	// console.log(treasure_boxes[0]);
-	treasure_boxes[0].object.position.x += 0.1
-
-
-	
-	
-	// console.log(x.position.x);
 	water.material.uniforms['time'].value += 1.0 / 60.0;
-
 	renderer.render(scene, camera);
 
-
 }
+
+function animate() {
+	Update_game()
+	requestAnimationFrame(animate);
+	render();
+}
+
 
 export { animate }
