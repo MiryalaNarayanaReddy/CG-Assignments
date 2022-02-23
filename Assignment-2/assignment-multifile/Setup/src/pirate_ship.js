@@ -5,17 +5,18 @@ import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader.
 
 function create_pirate_ship(x,y,z) {
 		var loader = new GLTFLoader();
-	
+// let mesh = null;
 		loader.load('/dist/pirate_ship/scene.gltf',
 			function (gltf) {
 				var object = gltf.scene;
-				object.rotation.x = -80;
-				object.rotation.z = 0;
-				object.rotation.y = 0;
-				object.position.set(x,y,z+1);
+				// object.rotation.x = -80;
+				// object.rotation.z = 0;
+				// object.rotation.y = 0;
+				object.position.set(x,y,z);
 				// object.material.color = 0xffff00
-				object.scale.set(.001 * object.scale.x, .001 * object.scale.y, .001 * object.scale.z)
+				object.scale.set(.02 * object.scale.x, .02 * object.scale.y, .02 * object.scale.z)
 				scene.add(object)
+				// mesh  = object
 			},
 	
 			function (xhr) {
@@ -26,6 +27,7 @@ function create_pirate_ship(x,y,z) {
 				console.log('An error happened = ', error);
 			}
 		);
+		// return mesh;
 }
 
 export {create_pirate_ship}

@@ -1,114 +1,197 @@
-import * as THREE from '../node_modules/three/build/three.module.js';
-import { create_ocean } from './ocean.js';
-import { create_pirate_ship } from './pirate_ship.js';
-import { create_ship } from './ship.js';
-import {create_treasurebox} from './treasure_box';
-import { ship_pos_x, ship_pos_y, ship_pos_z, camera_top_view,scene} from './global_variables.js';
-// import {GLTFLoader} from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+import * as THREE from '../node_modules/three';
+// import * as THREE from '../node_modules/three/examples/js/three.module.js';
+import Stats from '../node_modules/three/examples/jsm/libs/stats.module.js';
 
-ship_pos_x = 0
-ship_pos_y = 0
-ship_pos_z = 0
+import { GUI } from '../node_modules/three/examples/jsm/libs/lil-gui.module.min.js';
+import { OrbitControls } from '../node_modules/three/examples/jsm/controls/OrbitControls.js';
+import { Water } from '../node_modules/three/examples/jsm/objects/Water.js';
+import { Sky } from '../node_modules/three/examples/jsm/objects/Sky.js';
+import { create_treasurebox } from './treasure_box';
+import {scene} from './global_variables';
+import {create_pirate_ship} from './pirate_ship';
+import {treasure_boxes} from './global_variables'
+
+let container, stats;
+let camera, /*scene,*/ renderer;
+let controls, water, sun, mesh;
+
+init();
+animate();
 
 
-function create_camera() {
-	const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
-	camera.position.set(ship_pos_x, ship_pos_y - 1, ship_pos_z + 1)
+function init() {
 
-	camera.lookAt(camera.position.x, camera.position.y + 1, camera.position.z)
+	container = document.getElementById('container');
 
-	
-	return camera
+	//
+
+	renderer = new THREE.WebGLRenderer();
+	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.toneMapping = THREE.ACESFilmicToneMapping;
+	container.appendChild(renderer.domElement);
+
+	//
+
+	// scene = new THREE.Scene();
+
+	camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 20000);
+	camera.position.set(30, 30, 100);
+
+	//
+
+	sun = new THREE.Vector3();
+
+	// Water
+
+	const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+
+	water = new Water(
+		waterGeometry,
+		{
+			textureWidth: 512,
+			textureHeight: 512,
+			waterNormals: new THREE.TextureLoader().load('textures/waternormals.jpg', function (texture) {
+
+				texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+			}),
+			sunDirection: new THREE.Vector3(),
+			sunColor: 0xffffff,
+			waterColor: 0x001e0f,
+			distortionScale: 3.7,
+			fog: scene.fog !== undefined
+		}
+	);
+
+	water.rotation.x = - Math.PI / 2;
+
+	scene.add(water);
+
+	// Skybox
+
+	const sky = new Sky();
+	sky.scale.setScalar(10000);
+	scene.add(sky);
+
+	const skyUniforms = sky.material.uniforms;
+
+	skyUniforms['turbidity'].value = 10;
+	skyUniforms['rayleigh'].value = 2;
+	skyUniforms['mieCoefficient'].value = 0.005;
+	skyUniforms['mieDirectionalG'].value = 0.8;
+
+	const parameters = {
+		elevation: 2,
+		azimuth: 180
+	};
+
+	const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+	function updateSun() {
+
+		const phi = THREE.MathUtils.degToRad(90 - parameters.elevation);
+		const theta = THREE.MathUtils.degToRad(parameters.azimuth);
+
+		sun.setFromSphericalCoords(1, phi, theta);
+
+		sky.material.uniforms['sunPosition'].value.copy(sun);
+		water.material.uniforms['sunDirection'].value.copy(sun).normalize();
+
+		scene.environment = pmremGenerator.fromScene(sky).texture;
+
+	}
+
+	updateSun();
+
+	//
+
+	// const geometry = new THREE.BoxGeometry(30, 30, 30);
+	// const material = new THREE.MeshStandardMaterial({ roughness: 0 });
+
+	// mesh = new THREE.Mesh(geometry, material);
+	// scene.add(mesh);
+
+	//
+
+	controls = new OrbitControls(camera, renderer.domElement);
+	controls.maxPolarAngle = Math.PI * 0.495;
+	controls.target.set(0, 10, 0);
+	controls.minDistance = 40.0;
+	controls.maxDistance = 200.0;
+	controls.update();
+
+	//
+
+	stats = new Stats();
+	container.appendChild(stats.dom);
+
+	// GUI
+
+	const gui = new GUI();
+
+	const folderSky = gui.addFolder('Sky');
+	folderSky.add(parameters, 'elevation', 0, 90, 0.1).onChange(updateSun);
+	folderSky.add(parameters, 'azimuth', - 180, 180, 0.1).onChange(updateSun);
+	folderSky.open();
+
+	const waterUniforms = water.material.uniforms;
+
+	const folderWater = gui.addFolder('Water');
+	folderWater.add(waterUniforms.distortionScale, 'value', 0, 8, 0.1).name('distortionScale');
+	folderWater.add(waterUniforms.size, 'value', 0.1, 10, 0.1).name('size');
+	folderWater.open();
+
+	//
+
+	window.addEventListener('resize', onWindowResize);
+
+	create_treasurebox(4,5,0);
+
+	create_pirate_ship(10,5,100)
+	console.log(treasure_boxes.length);
 }
 
-function create_light() {
-	const color = 0xFFFFFF;
-	const intensity = 2;
-	const light = new THREE.DirectionalLight(color, intensity);
-	light.position.set(0,0,10);
-	return light;
+function onWindowResize() {
+
+	camera.aspect = window.innerWidth / window.innerHeight;
+	camera.updateProjectionMatrix();
+
+	renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+
 }
 
-
-////////// scene part
-
-
-
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-
-var ocean_object = create_ocean()
-var ship_object  = create_ship(0,0,0)
-
-create_treasurebox(3,6,0)
-var camera = create_camera()
-var light = create_light()
-create_pirate_ship(-3,3,0)
-
-scene.add(ocean_object.object)
-// scene.add(ship_object.object)
-// scene.add(treasurebox_object.object)
-// scene.add(pirate_object.object)
-scene.add(camera)
-scene.add(light)
-
-//////////////////     blender object
-
-
-//////////////////////////// event listeners
-
-document.addEventListener("keydown", onDocumentKeyDown, false);
-function onDocumentKeyDown(event) {
-	var keyCode = event.which;
-
-	if (keyCode == 87) {
-		ship_pos_y += 0.1  // w
-		camera.position.y += 0.1
-	} else if (keyCode == 83) {
-		ship_pos_y -= 0.1 // s
-		camera.position.y -= 0.1
-	} else if (keyCode == 65) {
-		ship_pos_x -= 0.1  // a
-		camera.position.x -= 0.1
-	} else if (keyCode == 68) {
-		ship_pos_x += 0.1 // d
-		camera.position.x += 0.1
-	}
-	else if (keyCode == 84)  // t
-	{
-
-		if (camera_top_view) {
-			camera_top_view = false
-			camera.position.set(ship_pos_x, ship_pos_y - 1, ship_pos_z + 1)
-			camera.lookAt(camera.position.x, camera.position.y + 1, camera.position.z)
-		}
-		else {
-			camera_top_view = true
-			camera.position.z = 10
-			camera.lookAt(ship_pos_x, ship_pos_y, 0)
-		}
-
-	}
-};
 
 
 function animate() {
+
+	
+	
+	
 	requestAnimationFrame(animate);
+	render();
+	stats.update();
+	
 
-	// ship_object.object.position.x = ship_pos_x
-	// ship_object.object.position.y = ship_pos_y
-	// ship_object.object.position.z = ship_pos_z
-	// light.position.set(ship_pos_x,ship_pos_y,ship_pos_z);
-	light.position.set(camera.position.x, camera.position.y, camera.position.z);
-	// camera.lookAt(camera.position.x,camera.position.y+1,camera.position.z)
+}
 
-	// light.position.set(camera.position.x,camera.position.y,camera.position.z);
-	// ocean_object.update_ocean()
+
+function render() {
+
+	// const time = performance.now() * 0.001;
+
+	// mesh.position.y = Math.sin(time) * 20 + 5;
+	// mesh.rotation.x = time * 0.5;
+	// mesh.rotation.z = time * 0.51;
+
+	
+	// console.log(x.position.x);
+	water.material.uniforms['time'].value += 1.0 / 60.0;
+
 	renderer.render(scene, camera);
-	// console.log("Working")
-	// console.log(camera.position.y)
-};
 
-animate();
+	
+}
+export {scene}

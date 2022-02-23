@@ -7,4 +7,7 @@ var camera_top_view = false
 
 const scene = new THREE.Scene();
 
-export {ship_pos_x,ship_pos_y,ship_pos_z,camera_top_view,scene}
+
+let pirate_ships = [];
+const treasure_boxes =  [];
+export {ship_pos_x,ship_pos_y,ship_pos_z,camera_top_view,scene,pirate_ships,treasure_boxes}
