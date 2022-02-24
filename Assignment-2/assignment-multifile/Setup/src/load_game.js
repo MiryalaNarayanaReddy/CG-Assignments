@@ -11,7 +11,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { game_object } from './gameobject';
 import { animate } from './index.js';
 import {
-    ship_pos_x, ship_pos_y, ship_pos_z, camera_top_view,
+    player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
 
     container, stats,
     camera, scene, renderer, controls, water, sun,
@@ -48,22 +48,24 @@ async function Load_game() {
     Promise.all(promise_game).then(() => {
         //do something to the model
 
+        
 
         
         for (let i = 0; i < NumberOfObjects; i++) {
-            treasure_boxes[i].object.position.set(i * i * 1000, 0, i * i * 1000);
+            treasure_boxes[i].object.position.set(i * i * 100, 0, i * i * 100);
             treasure_boxes[i].object.scale.set(0.1 * treasure_boxes[i].object.scale.x, 0.1 * treasure_boxes[i].object.scale.y, 0.1 * treasure_boxes[i].object.scale.z)
             scene.add(treasure_boxes[i].object);
         }
 
         for (let i = 0; i < NumberOfObjects; i++) {
-            pirate_ships[i].object.position.set(i * i * 100, 0, -i * i * 100);
+            pirate_ships[i].object.position.set( i* 100, 1, -i * i * 100);
             pirate_ships[i].object.scale.set(0.01 * pirate_ships[i].object.scale.x, 0.01 * pirate_ships[i].object.scale.y, 0.01 * pirate_ships[i].object.scale.z)
             scene.add(pirate_ships[i].object);
         }
 
-        player_ship.object.position.set(0, 0, 0);
-        player_ship.object.scale.set(0.1 * player_ship.object.scale.x, 0.1 * player_ship.object.scale.y, 0.1 * player_ship.object.scale.z)
+        player_ship.object.position.set(player_ship_pos_x,player_ship_pos_y,player_ship_pos_z);
+        player_ship.object.scale.set(0.2 * player_ship.object.scale.x, 0.2 * player_ship.object.scale.y, -0.2 * player_ship.object.scale.z)
+        
         scene.add(player_ship.object);
 
         animate();

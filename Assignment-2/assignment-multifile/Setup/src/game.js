@@ -13,14 +13,14 @@ import { game_object } from './gameobject';
 import {Load_game} from './load_game';
 
 import {
-    ship_pos_x, ship_pos_y, ship_pos_z, camera_top_view,
+    player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
 
     container, stats,
     camera, scene, renderer, controls, water, sun,
 
     NumberOfObjects,
     treasure_boxes, pirate_ships, player_ship,
-    promise_pirate_ships, promise_treasure_boxes, promise_player_ship
+    promise_pirate_ships, promise_treasure_boxes, promise_player_ship, UNIT_LENGTH
 
 
 } from './global_variables'
@@ -46,7 +46,8 @@ function game_init() {
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 20000);
-    camera.position.set(30, 30, 100);
+    camera.position.set(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH,player_ship_pos_z-UNIT_LENGTH);
+
 
     //
 

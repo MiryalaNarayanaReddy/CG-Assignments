@@ -1,7 +1,7 @@
 import * as THREE from '../node_modules/three';
 import {game_init} from './game.js'
 import {
-    ship_pos_x, ship_pos_y, ship_pos_z, camera_top_view,
+    player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
 
     container, stats,
     camera, scene, renderer, controls, water, sun,
