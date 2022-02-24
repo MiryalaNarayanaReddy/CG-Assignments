@@ -65,13 +65,15 @@ function onDocumentKeyDown(event) {
 		camera.position.x += UNIT_LENGTH
 	
 	}
-	else if (keyCode == 84)  // t
+	player_ship.object.position.set( player_ship_pos_x, player_ship_pos_y, player_ship_pos_z);
+	
+	if (keyCode == 84)  // t
 	{
 
 		if (camera_top_view) {
 			camera_top_view = false
 			camera.position.set(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH,player_ship_pos_z-UNIT_LENGTH);
-			camera.lookAt(player_ship_pos_x-1,player_ship_pos_y,player_ship_pos_z-1)
+			camera.lookAt(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH,player_ship_pos_z-UNIT_LENGTH*10000)
 		}
 		else {
 			camera_top_view = true
@@ -80,7 +82,7 @@ function onDocumentKeyDown(event) {
 		}
 
 	}
-	player_ship.object.position.set( player_ship_pos_x, player_ship_pos_y, player_ship_pos_z);
+	
 
 };
 
