@@ -20,7 +20,10 @@ let promise_treasure_boxes = new Array(NumberOfObjects);
 let player_ship;
 let promise_player_ship;
 
-
+let game_score = 0;
+let game_treasures = 0;
+let game_health = 20;
+let game_time = 0;
 
 export {
     player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
@@ -31,7 +34,8 @@ export {
     NumberOfObjects,
     treasure_boxes, pirate_ships, player_ship,
     promise_pirate_ships, promise_treasure_boxes, promise_player_ship,
-    UNIT_LENGTH
+    UNIT_LENGTH,
+    game_score,game_treasures,game_health,game_time
 
 
 }

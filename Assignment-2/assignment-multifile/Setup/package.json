@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "box-intersect": "^1.0.2",
     "three": "^0.137.5"
   },
   "devDependencies": {

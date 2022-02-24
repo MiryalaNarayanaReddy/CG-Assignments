@@ -3,16 +3,26 @@
 
 <head>
 	<meta charset="utf-8">
-	<title>three.js tutorial</title>
+	<title>3D game</title>
+	<link rel="stylesheet" href="main.css">
 </head>
 
 <body>
 	<!-- <h1>hello</h1> -->
-	
-	<div id="container"></div>
-	<div id="info">
-		<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - webgl ocean
+	<div id="display">
+
+		<span id="score">Score: 0</span>
+		<span id="health">Health: 0</span>
+		<span id="treasures">Treasure Boxes: 0</span>
+		<span id ="time">Time: 0</span>
 	</div>
+
+	<div id="container"></div>
+	<!-- <div id="info">
+		<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - webgl ocean
+	</div> -->
+
+
 
 	<!-- Import maps polyfill -->
 	<!-- Remove this when import maps will be widely supported -->

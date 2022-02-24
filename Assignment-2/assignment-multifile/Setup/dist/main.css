@@ -1,0 +1,18 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+span{
+    font-size: larger;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: bold;
+    width: 30px;
+}
+
+#display{
+
+    position:absolute;
+    float: left;
+}

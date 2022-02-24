@@ -1,6 +1,6 @@
 class game_object {
 	object;
-	is_destroyed = false;
+	is_destroyed;
 
 	constructor(object, is_destroyed) {
 		this.object = object;

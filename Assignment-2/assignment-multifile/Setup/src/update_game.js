@@ -10,36 +10,56 @@ import { Sky } from '../node_modules/three/examples/jsm/objects/Sky.js';
 import { GLTFLoader } from '../node_modules/three/examples/jsm/loaders/GLTFLoader.js';
 import { game_object } from './gameobject';
 
-import {Load_game} from './load_game';
+import { Load_game } from './load_game';
 
 import {
-    player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
+	player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
 
-    container, stats,
-    camera, scene, renderer, controls, water, sun,
+	container, stats,
+	camera, scene, renderer, controls, water, sun,
 
-    NumberOfObjects,
-    treasure_boxes, pirate_ships, player_ship,
-    promise_pirate_ships, promise_treasure_boxes, promise_player_ship,UNIT_LENGTH
+	NumberOfObjects,
+	treasure_boxes, pirate_ships, player_ship,
+	promise_pirate_ships, promise_treasure_boxes, promise_player_ship, UNIT_LENGTH,
+	display_score,display_treasures,display_health,display_time, game_treasures
 
 
 } from './global_variables'
 
-function float_objects()
-{
- 
+function float_objects() {
+
 }
 
+function collect_treasures() {
 
+	// var player1 = new THREE.BoundingBoxHelper(player_ship.object);
+	// player1.update();
+let	player1 =  new THREE.Box3().setFromObject(player_ship.object);
 
+	for (let i = 0; i < NumberOfObjects; i++) {
 
-function Update_game()
-{
+		if ((!treasure_boxes[i].is_destroyed)) {
+
+			let helper1 =new THREE.Box3().setFromObject(treasure_boxes[i].object);
 	
-    water.material.uniforms['time'].value += 1.0 / 60.0;
+			if( player1.intersectsBox(helper1))
+			{
+				treasure_boxes[i].is_destroyed = true;
+				scene.remove(treasure_boxes[i].object);
+				// console.log("collides");
+				game_treasures++;
+				document.getElementById("treasures").innerHTML = `Treasure Boxes: ${game_treasures}` 
+			}
 
-  
+		}
+	}
 
+}
+
+function Update_game() {
+
+	water.material.uniforms['time'].value += 1.0 / 60.0;
+	collect_treasures();
 }
 
 
@@ -49,44 +69,41 @@ function onDocumentKeyDown(event) {
 
 	if (keyCode == 87) {
 		player_ship_pos_z -= UNIT_LENGTH    // w
-		camera.position.z -= UNIT_LENGTH 
-		
+		camera.position.z -= UNIT_LENGTH
+
 
 	} else if (keyCode == 83) {
 		player_ship_pos_z += UNIT_LENGTH   // s
-		camera.position.z += UNIT_LENGTH 
-	
+		camera.position.z += UNIT_LENGTH
+
 	} else if (keyCode == 65) {
 		player_ship_pos_x -= UNIT_LENGTH    // a
 		camera.position.x -= UNIT_LENGTH
-	
+
 	} else if (keyCode == 68) {
 		player_ship_pos_x += UNIT_LENGTH   // d
 		camera.position.x += UNIT_LENGTH
-	
+
 	}
-	player_ship.object.position.set( player_ship_pos_x, player_ship_pos_y, player_ship_pos_z);
-	
+	player_ship.object.position.set(player_ship_pos_x, player_ship_pos_y, player_ship_pos_z);
+
 	if (keyCode == 84)  // t
 	{
 
 		if (camera_top_view) {
 			camera_top_view = false
-			camera.position.set(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH,player_ship_pos_z-UNIT_LENGTH);
-			camera.lookAt(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH,player_ship_pos_z-UNIT_LENGTH*10000)
+			camera.position.set(player_ship_pos_x, player_ship_pos_y + UNIT_LENGTH, player_ship_pos_z - UNIT_LENGTH);
+			camera.lookAt(player_ship_pos_x, player_ship_pos_y + UNIT_LENGTH, player_ship_pos_z - UNIT_LENGTH * 10000)
 		}
 		else {
 			camera_top_view = true
-			camera.position.set(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH*50,player_ship_pos_z+UNIT_LENGTH*50)
-			camera.lookAt(player_ship_pos_x,player_ship_pos_y,player_ship_pos_z)
+			camera.position.set(player_ship_pos_x, player_ship_pos_y + UNIT_LENGTH * 50, player_ship_pos_z + UNIT_LENGTH * 50)
+			camera.lookAt(player_ship_pos_x, player_ship_pos_y, player_ship_pos_z)
 		}
 
 	}
-	
+
 
 };
 
-
-
-
-export {Update_game}
+export { Update_game }
