@@ -21,7 +21,9 @@ import {
 	NumberOfObjects,
 	treasure_boxes, pirate_ships, player_ship,
 	promise_pirate_ships, promise_treasure_boxes, promise_player_ship, UNIT_LENGTH,
-	display_score,display_treasures,display_health,display_time, game_treasures
+	display_score,display_treasures,display_health,display_time, game_treasures,
+	cannon_ball_number,
+	cannon_balls
 
 
 } from './global_variables'
@@ -103,6 +105,12 @@ function onDocumentKeyDown(event) {
 
 	}
 
+	if(keyCode == 32)
+	{
+		cannon_balls[cannon_ball_number].object.position.set(player_ship_pos_x, player_ship_pos_y + UNIT_LENGTH, player_ship_pos_z - UNIT_LENGTH);
+		scene.add(cannon_balls[cannon_ball_number].object);
+		cannon_ball_number++
+	}
 
 };
 

@@ -117,7 +117,7 @@ function game_init() {
 
 
     /////////////////   OBJECTS ADDING /////////////////////////////////////
-    Load_game();
+     Load_game();
 }
 
 function onWindowResize() {

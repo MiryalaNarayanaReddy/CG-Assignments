@@ -8,9 +8,8 @@ import {
 
     NumberOfObjects,
     treasure_boxes, pirate_ships, player_ship,
-    promise_pirate_ships, promise_treasure_boxes, promise_player_ship
-
-
+    promise_pirate_ships, promise_treasure_boxes, promise_player_ship,
+    cannon_balls,promise_connon_balls
 } from './global_variables'
 
 import {Update_game} from './update_game'
