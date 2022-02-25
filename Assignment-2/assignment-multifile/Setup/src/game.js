@@ -20,8 +20,8 @@ import {
 
     NumberOfObjects,
     treasure_boxes, pirate_ships, player_ship,
-    promise_pirate_ships, promise_treasure_boxes, promise_player_ship, UNIT_LENGTH
-
+    promise_pirate_ships, promise_treasure_boxes, promise_player_ship, UNIT_LENGTH,
+    NumberOfCannonBalls
 
 } from './global_variables'
 
@@ -46,7 +46,7 @@ function game_init() {
     scene = new THREE.Scene();
 
     camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 1, 20000);
-    camera.position.set(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH,player_ship_pos_z-UNIT_LENGTH);
+    camera.position.set(player_ship_pos_x,player_ship_pos_y+UNIT_LENGTH*2,player_ship_pos_z-UNIT_LENGTH*3);
 
 
     //
@@ -110,8 +110,6 @@ function game_init() {
     water.material.uniforms['sunDirection'].value.copy(sun).normalize();
 
     scene.environment = pmremGenerator.fromScene(sky).texture;
-
-
 
     window.addEventListener('resize', onWindowResize);
 

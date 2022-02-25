@@ -3,19 +3,32 @@ import {game_init} from './game.js'
 import {
     player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
 
-    container, stats,
-    camera, scene, renderer, controls, water, sun,
+    container,stats,
+    camera,scene,renderer,controls,water,sun,
 
     NumberOfObjects,
     treasure_boxes, pirate_ships, player_ship,
     promise_pirate_ships, promise_treasure_boxes, promise_player_ship,
-    cannon_balls,promise_connon_balls
-} from './global_variables'
+    UNIT_LENGTH,
+    game_score,game_treasures,game_health,game_time,
 
-import {Update_game} from './update_game'
+    cannon_balls,promise_connon_balls,cannon_ball_number,NumberOfCannonBalls,
+
+    number_of_cannons_shot , number_of_left_over_pirate_ships, number_of_treasures_left_to_be_collected
+}
+ from './global_variables'
+
+import {pirate_shoot_cannons, Update_game} from './update_game'
 
 
 /***************************************************code */
+
+document.getElementById("treasures").innerHTML = `Treasure Boxes: ${game_treasures}`
+document.getElementById("treasure_boxes_left").innerHTML = `Treasure boxes left:  ${number_of_treasures_left_to_be_collected}`
+document.getElementById("health").innerHTML = `Health: ${game_health}`
+document.getElementById("pirate_ship_left").innerHTML = `Pirate ships left: ${number_of_left_over_pirate_ships}`
+document.getElementById("score").innerHTML = `Score: ${game_score}`
+document.getElementById("cannons").innerHTML = `Cannons: ${number_of_cannons_shot}`
 
 
 game_init();
@@ -27,7 +40,10 @@ function render() {
 
 }
 
+setInterval(pirate_shoot_cannons, 2000);
+
 function animate() {
+   
 	Update_game()
 	requestAnimationFrame(animate);
 	render();
