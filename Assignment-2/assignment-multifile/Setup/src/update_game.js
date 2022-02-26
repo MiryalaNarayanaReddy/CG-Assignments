@@ -25,7 +25,7 @@ import {
 	cannon_balls, NumberOfCannonBalls, game_score,
 
 	number_of_cannons_shot, number_of_left_over_pirate_ships, number_of_treasures_left_to_be_collected, game_health
-
+	, game_start_time, game_over, tbox, ship_p, cannon_b
 
 } from './global_variables'
 import { Score } from '@material-ui/icons';
@@ -34,6 +34,26 @@ function float_objects() {
 
 }
 
+function reload_treasures() {
+	for (let i = 0; i < NumberOfObjects; i++) {
+		treasure_boxes[i].is_destroyed = false;
+		treasure_boxes[i].object.position.set(UNIT_LENGTH * 10 * (i + 10) * Math.cos(Math.PI * (Math.random() * (360))), 0, UNIT_LENGTH * (i + 10) * 10 * Math.sin(Math.PI * (Math.random() * (360))));
+		scene.add(treasure_boxes[i].object);
+	}
+}
+
+function reload_pirate_ships() {
+	for (let i = 0; i < NumberOfObjects; i++) {
+		// pirate_ships[i] = new game_object(ship_p.object.clone(true),false,false);
+		pirate_ships[i].is_destroyed = false;
+		pirate_ships[i].object.position.set(UNIT_LENGTH * 10 * (i + 10) * Math.cos(Math.PI * (Math.random() * (360))), 3, UNIT_LENGTH * (i + 10) * 10 * Math.sin(Math.PI * (Math.random() * (360))));
+		// pirate_ships[i].object.scale.set(0.02 * pirate_ships[i].object.scale.x, 0.02 * pirate_ships[i].object.scale.y, -0.02 * pirate_ships[i].object.scale.z)
+		pirate_ships[i].health = 2 + Math.floor(Math.random() * 5)
+		pirate_ships[i].points = pirate_ships[i].health;
+		scene.add(pirate_ships[i].object);
+
+	}
+}
 
 
 function collect_treasures() {
@@ -54,7 +74,17 @@ function collect_treasures() {
 				// console.log("collides");
 				game_treasures++;
 				number_of_treasures_left_to_be_collected--;
+				game_score += 10
 				document.getElementById("treasures").innerHTML = `Treasure Boxes: ${game_treasures}`
+				document.getElementById("score").innerHTML = `Score: ${game_score}`
+
+				if (number_of_treasures_left_to_be_collected == 0) {
+					// game_over = true;
+					// reload_pirate_ships()
+					number_of_treasures_left_to_be_collected = NumberOfObjects;
+					reload_treasures()
+
+				}
 				document.getElementById("treasure_boxes_left").innerHTML = `Treasure boxes left:  ${number_of_treasures_left_to_be_collected}`
 			}
 
@@ -71,17 +101,27 @@ function update_pirate_cannons() {
 		// if ((!pirate_ships[i].is_destroyed)) {
 		for (let j = 0; j < 5; j++) {
 			if (pirate_ships[i].cannon_balls[j].is_shot) {
-				pirate_ships[i].cannon_balls[j].object.position.x += 2*pirate_ships[i].cannon_balls[j].velocity.x
+				pirate_ships[i].cannon_balls[j].object.position.x += 2 * pirate_ships[i].cannon_balls[j].velocity.x
 				pirate_ships[i].cannon_balls[j].object.position.y += 0
-				pirate_ships[i].cannon_balls[j].object.position.z += 2*pirate_ships[i].cannon_balls[j].velocity.z
+				pirate_ships[i].cannon_balls[j].object.position.z += 2 * pirate_ships[i].cannon_balls[j].velocity.z
 
 				let helper1 = new THREE.Box3().setFromObject(pirate_ships[i].cannon_balls[j].object);
 
-				if (player1.intersectsBox(helper1)) {
+				if (player1.intersectsBox(helper1)) 
+				{
 					pirate_ships[i].cannon_balls[j].is_shot = false;
 					scene.remove(pirate_ships[i].cannon_balls[j].object);
-					game_health--;
-					document.getElementById("health").innerHTML = `Health: ${game_health}`
+					if(game_health>0)
+					{
+						game_health--;
+
+						document.getElementById("health").innerHTML = `Health: ${game_health}`
+						if (game_health == 0) {
+							document.getElementById("game_over").style.display = "block";
+							document.removeEventListener("keydown", onDocumentKeyDown, false);
+							setTimeout(function(){location.reload()}, 5000);
+						}
+					}
 				}
 
 				let d = Math.sqrt((pirate_ships[i].cannon_balls[j].position_of_shooting.x - pirate_ships[i].cannon_balls[j].object.position.x) ** 2 + (pirate_ships[i].cannon_balls[j].position_of_shooting.z - pirate_ships[i].cannon_balls[j].object.position.z) ** 2)
@@ -117,7 +157,7 @@ function pirate_shoot_cannons() {
 
 				pirate_ships[i].cannon_ball_number++
 				if (pirate_ships[i].cannon_ball_number == 5) {
-					pirate_ships[i].cannon_ball_number=0
+					pirate_ships[i].cannon_ball_number = 0
 				}
 			}
 		}
@@ -146,9 +186,9 @@ function update_cannon_balls() {
 		if ((!cannon_balls[i].is_destroyed) && cannon_balls[i].is_shot) {
 			// cannon_balls[i].object.position.set(cannon_balls[i].object.position+cannon_balls[i].velocity);
 
-			cannon_balls[i].object.position.x += 2*cannon_balls[i].velocity.x
+			cannon_balls[i].object.position.x += 2 * cannon_balls[i].velocity.x
 			cannon_balls[i].object.position.y += 0
-			cannon_balls[i].object.position.z += 2*cannon_balls[i].velocity.z
+			cannon_balls[i].object.position.z += 2 * cannon_balls[i].velocity.z
 
 			let ball_box = new THREE.Box3().setFromObject(cannon_balls[i].object);
 
@@ -166,8 +206,14 @@ function update_cannon_balls() {
 							pirate_ships[j].is_destroyed = true;
 							scene.remove(pirate_ships[j].object);
 							number_of_left_over_pirate_ships--;
+							game_score += pirate_ships[j].points;
+							if (number_of_left_over_pirate_ships == 0) {
+								// game_over = true;
+								number_of_left_over_pirate_ships = NumberOfObjects;
+								reload_pirate_ships()
+							}
 							document.getElementById("pirate_ship_left").innerHTML = `Pirate ships left: ${number_of_left_over_pirate_ships}`
-							game_score +=pirate_ships[j].points;
+
 						}
 
 						document.getElementById("score").innerHTML = `Score: ${game_score}`
@@ -187,7 +233,8 @@ function update_cannon_balls() {
 }
 
 function Update_game() {
-	// document.getElementById("time").innerHTML = `Time : ${performance.now()/1000} s`
+	let t = new Date()
+	document.getElementById("time").innerHTML = `Time : ${Math.floor((t.getTime() - game_start_time) / 1000)} s`
 	water.material.uniforms['time'].value += 1.0 / 60.0;
 	collect_treasures();
 	update_pirate_ships();

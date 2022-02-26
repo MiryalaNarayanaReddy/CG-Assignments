@@ -21,7 +21,7 @@ import {
     NumberOfObjects,
     treasure_boxes, pirate_ships, player_ship,
     promise_pirate_ships, promise_treasure_boxes, promise_player_ship, UNIT_LENGTH,
-    NumberOfCannonBalls
+    NumberOfCannonBalls,
 
 } from './global_variables'
 

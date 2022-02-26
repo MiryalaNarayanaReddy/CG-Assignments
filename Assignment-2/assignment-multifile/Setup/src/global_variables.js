@@ -10,7 +10,7 @@ let container, stats;
 let camera, scene, renderer;
 let controls, water, sun;
 
-let NumberOfObjects = 20
+let NumberOfObjects = 10
 let number_of_cannons_shot = 0;
 
 let number_of_left_over_pirate_ships = NumberOfObjects;
@@ -32,7 +32,11 @@ let game_health = 100;
 let game_time = 0;
 let cannon_ball_number = 0;
 let NumberOfCannonBalls = 10;
-
+let  game_start_time = 0;
+let game_over = false;
+let tbox;
+let ship_p;
+let cannon_b;
 
 export {
     player_ship_pos_x, player_ship_pos_y, player_ship_pos_z, camera_top_view,
@@ -48,5 +52,7 @@ export {
 
     cannon_balls,promise_connon_balls,cannon_ball_number,NumberOfCannonBalls,
 
-    number_of_cannons_shot , number_of_left_over_pirate_ships, number_of_treasures_left_to_be_collected
+    number_of_cannons_shot , number_of_left_over_pirate_ships, number_of_treasures_left_to_be_collected,
+    game_start_time,game_over,
+    tbox,ship_p,cannon_b
 }
