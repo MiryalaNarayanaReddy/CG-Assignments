@@ -40,7 +40,7 @@ function render() {
 
 }
 
-setInterval(pirate_shoot_cannons, 2000);
+
 
 function animate() {
    

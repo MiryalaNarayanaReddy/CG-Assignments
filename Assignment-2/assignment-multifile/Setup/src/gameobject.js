@@ -22,7 +22,7 @@ class game_object {
 		this.position_of_shooting = new THREE.Vector3(0,0,0)
 		this.promise_cannons = new Array(5)
 		this.cannon_balls = new Array(5);
-		this.cannon_number = 0;
+		this.cannon_ball_number = 0;
 	}
 }
 

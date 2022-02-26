@@ -71,9 +71,9 @@ function update_pirate_cannons() {
 		// if ((!pirate_ships[i].is_destroyed)) {
 		for (let j = 0; j < 5; j++) {
 			if (pirate_ships[i].cannon_balls[j].is_shot) {
-				pirate_ships[i].cannon_balls[j].object.position.x += pirate_ships[i].cannon_balls[j].velocity.x
+				pirate_ships[i].cannon_balls[j].object.position.x += 2*pirate_ships[i].cannon_balls[j].velocity.x
 				pirate_ships[i].cannon_balls[j].object.position.y += 0
-				pirate_ships[i].cannon_balls[j].object.position.z += pirate_ships[i].cannon_balls[j].velocity.z
+				pirate_ships[i].cannon_balls[j].object.position.z += 2*pirate_ships[i].cannon_balls[j].velocity.z
 
 				let helper1 = new THREE.Box3().setFromObject(pirate_ships[i].cannon_balls[j].object);
 
@@ -108,16 +108,16 @@ function pirate_shoot_cannons() {
 			let d = Math.sqrt((player_ship.object.position.x - pirate_ships[i].object.position.x) ** 2 + (player_ship.object.position.z - pirate_ships[i].object.position.z) ** 2)
 			if (d <= UNIT_LENGTH * 30) {
 
-				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_number].object.position.set(pirate_ships[i].object.position.x, pirate_ships[i].object.position.y, pirate_ships[i].object.position.z);
-				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_number].is_shot = true;
+				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_ball_number].object.position.set(pirate_ships[i].object.position.x, pirate_ships[i].object.position.y, pirate_ships[i].object.position.z);
+				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_ball_number].is_shot = true;
 
-				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_number].position_of_shooting.set(pirate_ships[i].object.position.x, pirate_ships[i].object.position.y, pirate_ships[i].object.position.z);
-				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_number].velocity.set((player_ship.object.position.x - pirate_ships[i].object.position.x) / d, 0, (player_ship.object.position.z - pirate_ships[i].object.position.z) / d);
-				scene.add(pirate_ships[i].cannon_balls[pirate_ships[i].cannon_number].object)
+				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_ball_number].position_of_shooting.set(pirate_ships[i].object.position.x, pirate_ships[i].object.position.y, pirate_ships[i].object.position.z);
+				pirate_ships[i].cannon_balls[pirate_ships[i].cannon_ball_number].velocity.set((player_ship.object.position.x - pirate_ships[i].object.position.x) / d, 0, (player_ship.object.position.z - pirate_ships[i].object.position.z) / d);
+				scene.add(pirate_ships[i].cannon_balls[pirate_ships[i].cannon_ball_number].object)
 
-				pirate_ships[i].cannon_number++
-				if (pirate_ships[i].cannon_number == 5) {
-					pirate_ships[i].cannon_number=0
+				pirate_ships[i].cannon_ball_number++
+				if (pirate_ships[i].cannon_ball_number == 5) {
+					pirate_ships[i].cannon_ball_number=0
 				}
 			}
 		}
@@ -141,15 +141,14 @@ function update_pirate_ships() {
 	}
 }
 
-
 function update_cannon_balls() {
 	for (let i = 0; i < NumberOfCannonBalls; i++) {
 		if ((!cannon_balls[i].is_destroyed) && cannon_balls[i].is_shot) {
 			// cannon_balls[i].object.position.set(cannon_balls[i].object.position+cannon_balls[i].velocity);
 
-			cannon_balls[i].object.position.x += cannon_balls[i].velocity.x
+			cannon_balls[i].object.position.x += 2*cannon_balls[i].velocity.x
 			cannon_balls[i].object.position.y += 0
-			cannon_balls[i].object.position.z += cannon_balls[i].velocity.z
+			cannon_balls[i].object.position.z += 2*cannon_balls[i].velocity.z
 
 			let ball_box = new THREE.Box3().setFromObject(cannon_balls[i].object);
 
