@@ -28,7 +28,7 @@ let promise_player_ship;
 
 let game_score = 0;
 let game_treasures = 0;
-let game_health = 100;
+let game_health = 10;
 let game_time = 0;
 let cannon_ball_number = 0;
 let NumberOfCannonBalls = 10;

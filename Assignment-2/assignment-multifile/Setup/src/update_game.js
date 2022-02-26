@@ -93,6 +93,46 @@ function collect_treasures() {
 
 }
 
+
+function player_pirate_collision()
+{
+	let player1 = new THREE.Box3().setFromObject(player_ship.object);
+
+	for (let i = 0; i < NumberOfObjects; i++) {
+		if(!pirate_ships[i].is_destroyed)
+		{
+			let pirate1 = new THREE.Box3().setFromObject(pirate_ships[i].object);
+			if(player1.intersectsBox(pirate1))
+			{
+				pirate_ships[i].is_destroyed = true;
+				scene.remove(pirate_ships[i].object);
+
+				number_of_left_over_pirate_ships--;
+				game_score += pirate_ships[i].points;
+				game_health-= pirate_ships[i].health;
+				if(game_health<=0)
+				{
+					console.log(`game_health = ${game_health}`)
+					game_health = 0;
+					document.getElementById("health").innerHTML = `Health: ${game_health}`
+					document.getElementById("game_over").style.display = "block";
+					document.removeEventListener("keydown", onDocumentKeyDown, false);
+					setTimeout(function(){location.reload()}, 5000);
+				}
+				if (number_of_left_over_pirate_ships == 0) 
+				{
+					// game_over = true;
+					number_of_left_over_pirate_ships = NumberOfObjects;
+					reload_pirate_ships()
+				}
+				document.getElementById("pirate_ship_left").innerHTML = `Pirate ships left: ${number_of_left_over_pirate_ships}`
+				document.getElementById("score").innerHTML = `Score: ${game_score}`
+				document.getElementById("health").innerHTML = `Health: ${game_health}`
+			}
+		}
+	}
+}
+
 function update_pirate_cannons() {
 	let player1 = new THREE.Box3().setFromObject(player_ship.object);
 
@@ -240,6 +280,7 @@ function Update_game() {
 	update_pirate_ships();
 	update_cannon_balls();
 	update_pirate_cannons();
+	player_pirate_collision();
 }
 
 
